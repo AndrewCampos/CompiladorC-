@@ -1,0 +1,5 @@
+void main(void){
+  int i;
+  i = 2;
+  return 0;
+}
