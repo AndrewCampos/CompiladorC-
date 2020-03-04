@@ -1,6 +1,6 @@
 # ESPECIFICAÇÕES PARA FUNCIONAMENTO DO COMPILADOR:
 
-** Comandos para dar permissão aos scripts:
+## Comandos para dar permissão aos scripts:
 
 $ chmod +x run.sh (compilar o compilador)
 
