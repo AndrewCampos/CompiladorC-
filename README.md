@@ -1,6 +1,6 @@
 # Compilador para C-
 
-## ESPECIFICAÇÕES PARA FUNCIONAMENTO DO COMPILADOR:
+### ESPECIFICAÇÕES PARA FUNCIONAMENTO DO COMPILADOR:
 
 #### Comandos para dar permissão aos scripts:
 
