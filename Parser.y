@@ -231,10 +231,10 @@ iteracao-dec: WHI APR exp FPR dec-interna {
 ;
 
 retorno-dec: RET exp PEV{
-                $$ = newStmtNode(ReturnK);
+                $$ = newStmtNode(ReturnINT);
                 $$->child[0] = $2;
                 $$->lineno = lineno;
-            }| RET PEV { $$ = newStmtNode(ReturnK); }
+            }| RET PEV { $$ = newStmtNode(ReturnVOID); }
 ;
 
 exp: var ATR exp {

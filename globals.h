@@ -40,13 +40,13 @@ extern int lineno; /* source line number for listing */
 /**************************************************/
 
 typedef enum {StmtK,ExpK} NodeKind;
-typedef enum {IfK,WhileK,AssignK,ReturnK} StmtKind;
+typedef enum {IfK,WhileK,AssignK,ReturnINT,ReturnVOID} StmtKind;
 typedef enum {OpK,ConstK,IdK,VarDeclK,VetDeclK,FunDeclK,AtivK,TypeK,VetorK,ParamK} ExpKind;
 
 /* ExpType é usado para checagem de tipo */
 typedef enum {Void,Integer,Boolean} ExpType;
 typedef enum {INTTYPE, VOIDTYPE, NULLL} dataTypes;
-typedef enum {VAR, FUN, CALL, VET} IDTypes;
+typedef enum {VAR, FUN, CALL, VET, RETT} IDTypes;
 
 #define MAXCHILDREN 3
 

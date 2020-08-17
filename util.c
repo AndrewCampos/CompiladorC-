@@ -111,7 +111,10 @@ static void printSpaces(void)
          case AssignK:
            fprintf(listing,"Assign: \n");
            break;
-         case ReturnK:
+         case ReturnINT:
+           fprintf(listing,"Return\n");
+           break;
+          case ReturnVOID:
            fprintf(listing,"Return\n");
            break;
          default:

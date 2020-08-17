@@ -6,7 +6,7 @@
 #define NO_ANALYZE FALSE
 
 /* set NO_CODE to TRUE to get a compiler that does not generate code */
-#define NO_CODE FALSE
+#define NO_CODE TRUE
 
 #include "util.h"
 #if NO_PARSE
@@ -20,6 +20,7 @@
 #endif
 #endif
 
+extern int check_return;
 /* allocate global variables */
 int lineno = 1;
 FILE * source;
@@ -67,8 +68,9 @@ int main( int argc, char * argv[] ) {
 #if !NO_ANALYZE7 
   if (TraceAnalyze) fprintf(listing,"\nConstruindo Tabela de Simbolos...\n");
     buildSymtab(syntaxTree);
-    //if (TraceAnalyze) fprintf(listing,"\nChecando Tipos...\n");
-    //typeCheck(syntaxTree);
+    if (TraceAnalyze) fprintf(listing,"\nChecando Tipos...\n");
+    check_return = TRUE;
+    typeCheck(syntaxTree);
    if (TraceAnalyze) fprintf(listing,"\nCompilação Concluida!\n"); 
 
 #if !NO_CODE
@@ -82,10 +84,10 @@ int main( int argc, char * argv[] ) {
     if (code == NULL) {
       printf("Unable to open %s\n",codefile);
       exit(1);
-    }/*
+    }
     fprintf(listing,"\nCreating Intermediate Code...\n");
-    codeGen(syntaxTree,codefile);                             GERADOR DE COD. INTERMED.
-    fprintf(listing,"\nIndermediate Code Created\n");*/
+    codeGen(syntaxTree,codefile);                             //GERADOR DE COD. INTERMED.
+    fprintf(listing,"\nIndermediate Code Created\n");
     fclose(code);
    } 
 #endif

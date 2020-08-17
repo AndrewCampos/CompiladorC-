@@ -2,7 +2,7 @@
    uma matriz com dez elementos. */
 
 int vet[ 10 ];
-int y; int y;
+int y;
 
 int minloc ( int a[], int low, int high )
 {	int i; int x; int k;
@@ -16,7 +16,6 @@ int minloc ( int a[], int low, int high )
 		}
 		i = i + 1;
 	}
-	xyz();
 	return k;
 }
 
@@ -33,18 +32,17 @@ void sort( int a[], int low, int high)
 	}
 }
 
-void mainx(void)
+void mainc(void)
 {
 	int i;
-        int minloc;
-	w = 0;
 	i = 0;
+	e =0;
 	while (i < 10){
 		vet[i] = input();
 		i = i + 1;
+		xyz();
 	}
 	sort(vet,0,10);
-        i = sort(vet,0,10);
 	i = 0;
 	while (i < 10){
 		output(vet[i]);

@@ -1,5 +1,17 @@
-void main(void){
-  int i;
-  i = 2;
-  return 0;
+int teste(void){
+    int j;
+    j = j + teste();
+    return j;
+}
+
+void fun(int i){
+    i = i + 1;
+}
+
+int main(void){
+    int i;
+    i = i + teste();
+    i = teste();
+    fun(a);
+    return 0;
 }
