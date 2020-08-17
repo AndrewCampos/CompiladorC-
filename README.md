@@ -16,11 +16,7 @@ $ ./clean.sh
 
 ALTERAÇÕES QUE PRECISAM SER FEITAS:
 
-Inserir erro de tipagem: Função com parâmetros não recebe os mesmo quando é chamada
-
-Consertar erro de tipagem: Atribuir função void quando atribuição é uma expressão
-
-Consertar erro Semântico: Variavel nao declarada no escopo
+Escolher quadras do CI
 
 Gerar código intermediário
 
