@@ -26,6 +26,13 @@
 /* MAXRESERVED = o número de palavras reservadas */
 #define MAXRESERVED 8
 
+/* Cores para o terminal */
+#define VERMELHO  "\x1b[31m"
+#define VERDE  "\x1b[32m"
+#define BRANCO "\x1b[37m"
+#define AMARELO "\x1b[33m"
+#define AZUL "\x1b[34m"
+
 /* Yacc/Bison gera os próprios valores inteiros para os tokens */
 typedef int TokenType;
 

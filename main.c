@@ -6,7 +6,7 @@
 #define NO_ANALYZE FALSE
 
 /* set NO_CODE to TRUE to get a compiler that does not generate code */
-#define NO_CODE FALSE
+#define NO_CODE TRUE
 
 #include "util.h"
 #if NO_PARSE
@@ -16,6 +16,9 @@
 #if !NO_ANALYZE
 #include "analyze.h"
 #if !NO_CODE
+#include "cgen.h"
+#include "assembly.h"
+#include "binary.h"
 #endif
 #endif
 #endif
@@ -40,7 +43,7 @@ int main( int argc, char * argv[] ) {
   char pgm[120]; /* nome do arquivo do código fonte */
   char path[120];
   if (argc != 2) {
-    fprintf(stderr,"Arquivo não especificado.\n Uso: %s <nome do arquivo>\n",argv[0]);
+    fprintf(stderr,VERMELHO"Arquivo não especificado.\n Uso: %s <nome do arquivo>\n"BRANCO,argv[0]);
     exit(1);
   }
   strcpy(path,"codigos/");
@@ -50,11 +53,11 @@ int main( int argc, char * argv[] ) {
   strcat(path,pgm);
   source = fopen(path,"r");
   if (source==NULL) {
-    fprintf(stderr,"Arquivo %s não encontrado.\n",path);
+    fprintf(stderr,VERMELHO"Arquivo %s não encontrado.\n"BRANCO,path);
     exit(1);
   }
   listing = stdout; /* send listing to screen */
-  fprintf(listing,"\nCOMPILAÇÃO DO ARQUIVO C-: %s\n",pgm);
+  fprintf(listing,VERDE"\nCOMPILAÇÃO DO ARQUIVO C-: %s\n"BRANCO,pgm);
 
 
 #if NO_PARSE
@@ -69,12 +72,12 @@ int main( int argc, char * argv[] ) {
 
 
 #if !NO_ANALYZE7 
-  if (TraceAnalyze) fprintf(listing,"\nConstruindo Tabela de Simbolos...\n");
+  if (TraceAnalyze) fprintf(listing,AZUL"\nConstruindo Tabela de Simbolos...\n"BRANCO);
     buildSymtab(syntaxTree);
-    if (TraceAnalyze) fprintf(listing,"\nChecando Tipos...\n");
+    if (TraceAnalyze) fprintf(listing,AZUL"\nChecando Tipos...\n"BRANCO);
     check_return = TRUE;
     typeCheck(syntaxTree);
-   if (TraceAnalyze) fprintf(listing,"Compilação Concluida!\n"); 
+   if (TraceAnalyze) fprintf(listing,VERDE"Compilação Concluida!\n"BRANCO); 
 
 #if !NO_CODE
    if (!Error){
@@ -86,12 +89,12 @@ int main( int argc, char * argv[] ) {
     strcat(codefile,".inst");
     code = fopen(codefile,"w");
     if (code == NULL) {
-      printf("Unable to open %s\n",codefile);
+      printf(VERMELHO"Unable to open %s\n"BRANCO,codefile);
       exit(1);
     }
-    fprintf(listing,"Creating Intermediate Code...\n");
+    fprintf(listing,AZUL"Creating Intermediate Code...\n"BRANCO);
     codeGen(syntaxTree,codefile);                             //GERADOR DE COD. INTERMED.
-    fprintf(listing,"Indermediate Code Created\n");
+    fprintf(listing,VERDE"Indermediate Code Created\n"BRANCO);
     fclose(code);
    } 
 #endif

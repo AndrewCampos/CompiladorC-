@@ -81,16 +81,16 @@ void st_insert( char * name, int lineno, int op, char* escopo, dataTypes RetType
     hashTable[h] = l;
   }
   else if( (l->IType == FUN  && IType == VAR) || (l->IType == CALL  && IType == VAR)){
-    fprintf(listing,"Erro: Nome da variavel '%s' já utilizada como nome de função.[%d]\n",name, lineno);
+    fprintf(listing,VERMELHO"[%d] Erro semântico!"BRANCO" Nome da variavel '%s' já utilizada como nome de função.\n",lineno,name);
     Error = TRUE;
   }
   else if( l->escopo == escopo && op != 0 ){
-    fprintf(listing,"Erro: Variavel '%s' já declarada neste escopo.[%d]\n",name, lineno);
+    fprintf(listing,VERMELHO"[%d] Erro semântico!"BRANCO" Variavel '%s' já declarada neste escopo.\n",lineno,name);
     Error = TRUE;
   }
   else if(l->escopo != escopo && (strcmp(l->escopo,"global") != 0) ){
     //procura por variavel global antes de supor que não existe
-    fprintf(listing,"Erro: Variavel '%s' já declarada no escopo global.[%d]\n",name, lineno);
+    fprintf(listing,VERMELHO"[%d] Erro semântico!"BRANCO" Variavel '%s' já declarada no escopo global.\n",lineno,name);
     Error = TRUE;
   }else if(l->escopo != escopo){
     while ((l != NULL)){
@@ -105,7 +105,7 @@ void st_insert( char * name, int lineno, int op, char* escopo, dataTypes RetType
       l = l->next;
     }
     if(l == NULL){
-      fprintf(listing,"Erro: Variavel '%s' não declarada neste escopo.[%d]\n",name, lineno);
+      fprintf(listing,VERMELHO"[%d] Erro semântico!"BRANCO" Variavel '%s' não declarada neste escopo.\n",lineno,name);
       Error = TRUE;
     }
   }
@@ -137,7 +137,7 @@ void busca_main () {
   while ((l != NULL) && ((strcmp("main",l->name) != 0 || l->IType == VAR)))
     l = l->next;
   if (l == NULL) {
-    fprintf(listing,"Erro: Função main não declarada\n");
+    fprintf(listing,VERMELHO"Erro semântico!"BRANCO" Função main não declarada\n");
     Error = TRUE;
   }
 }
@@ -183,8 +183,8 @@ dataTypes getFunType(char* nome){
 
 void printSymTab(FILE * listing) {
   int i;
-  fprintf(listing,"Nome           Escopo  Tipo ID  Tipo Retorno  Tipo Param  Num da linha\n");
-  fprintf(listing,"-------------  ------  -------  ------------  ----------  ------------\n");
+  fprintf(listing,"Nome           Escopo  Tipo ID  Tipo Retorno  Tipo Param  Mem. Loc.  Num da linha\n");
+  fprintf(listing,"-------------  ------  -------  ------------  ----------  ---------  ------------\n");
   for (i=0;i<SIZE;++i) {
     if (hashTable[i] != NULL) {
       BucketList l = hashTable[i];
@@ -242,6 +242,7 @@ void printSymTab(FILE * listing) {
           break;
         }
         fprintf(listing,"%-10s ",data);
+        fprintf(listing,"    %-3d     ",l->memloc);
         while (t != NULL) {
           fprintf(listing,"%3d; ",t->lineno);
           t = t->next;

@@ -12,6 +12,6 @@ int main(void){
     int i;
     i = i + teste();
     i = teste();
-    fun(i);
+    fun();
     return 0;
 }
