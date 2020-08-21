@@ -339,7 +339,11 @@ mult: MUL {
 fator: APR exp FPR { $$ = $2; } 
      | var { $$ = $1; }
      | ativacao { $$ = $1; params = 0; }
-     | NUM { $$ = $1; }
+     | NUM {
+            $$ = newExpNode(ConstK);
+            $$->type = INTTYPE;
+            $$->attr.val = atoi(tokenString);
+            }
 ;
 
 ativacao: fun-id APR args FPR {

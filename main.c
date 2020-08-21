@@ -6,7 +6,7 @@
 #define NO_ANALYZE FALSE
 
 /* set NO_CODE to TRUE to get a compiler that does not generate code */
-#define NO_CODE TRUE
+#define NO_CODE FALSE
 
 #include "util.h"
 #if NO_PARSE
@@ -77,24 +77,24 @@ int main( int argc, char * argv[] ) {
     if (TraceAnalyze) fprintf(listing,AZUL"\nChecando Tipos...\n"BRANCO);
     check_return = TRUE;
     typeCheck(syntaxTree);
-   if (TraceAnalyze) fprintf(listing,VERDE"Compilação Concluida!\n"BRANCO); 
+   if (TraceAnalyze) fprintf(listing,VERDE"Análise Concluida!\n"BRANCO); 
 
 #if !NO_CODE
    if (!Error){
    char * codefile;
     int fnlen = strcspn(pgm,".");
-    codefile = (char *) calloc(12+fnlen+4, sizeof(char));
+    codefile = (char *) calloc(12+fnlen+5, sizeof(char));
     strcpy(codefile,"binarios/");
     strncat(codefile,pgm,fnlen);
     strcat(codefile,".inst");
     code = fopen(codefile,"w");
     if (code == NULL) {
-      printf(VERMELHO"Unable to open %s\n"BRANCO,codefile);
+      printf(VERMELHO"Não foi possível abrir o arquivo '%s'!\n"BRANCO,codefile);
       exit(1);
     }
-    fprintf(listing,AZUL"Creating Intermediate Code...\n"BRANCO);
+    fprintf(listing,AZUL"Criando código intermediário...\n"BRANCO);
     codeGen(syntaxTree,codefile);                             //GERADOR DE COD. INTERMED.
-    fprintf(listing,VERDE"Indermediate Code Created\n"BRANCO);
+    fprintf(listing,VERDE"Código intermediário criado com sucesso!\n"BRANCO);
     fclose(code);
    } 
 #endif

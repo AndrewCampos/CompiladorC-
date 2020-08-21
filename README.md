@@ -16,7 +16,15 @@ $ ./clean.sh
 
 ALTERAÇÕES QUE PRECISAM SER FEITAS:
 
+Arrumar a flag Error
+
+Conferir operações
+
+Adaptar linguagem para processador
+
 Escolher quadras do CI
+
+Colcoar flag para loads desnecessarios
 
 Gerar código intermediário
 

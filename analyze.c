@@ -160,11 +160,11 @@ void checkNode(TreeNode * t){
         if((t->child[0] == NULL) || (t->child[1] == NULL)) break;
         if (((t->child[0]->kind.exp == AtivK) &&( getFunType(t->child[0]->attr.name)) == VOIDTYPE) ||
             ((t->child[1]->kind.exp == AtivK) && (getFunType(t->child[1]->attr.name) == VOIDTYPE)))
-              typeError(t,VERMELHO"Erro semântico!"BRANCO" Uma funcao com retorno VOID não pode ser um operando.");
+              typeError(t,VERMELHO"     Erro semântico!"BRANCO" Uma funcao com retorno VOID não pode ser um operando.");
         break;
       case AtivK:
         if (((t->params > 0) && (getFunStmt(t->attr.name)) == VOIDTYPE))
-              typeError(t,VERMELHO"Erro semântico! "BRANCO"Insercao de parametros a uma função do tipo VOID.");
+              typeError(t,VERMELHO"     Erro semântico! "BRANCO"Insercao de parametros a uma função do tipo VOID.");
         break;
         default:
           break;
@@ -175,7 +175,7 @@ void checkNode(TreeNode * t){
         case AssignK:
           if((t->child[1] == NULL)) break;
           if (t->child[1]->kind.exp == AtivK && getFunType(t->child[1]->attr.name) == VOIDTYPE)
-            typeError(t,VERMELHO"Erro semântico! "BRANCO"Uma funcao com retorno VOID não pode ser atribuida a uma variavel.");
+            typeError(t,VERMELHO"     Erro semântico! "BRANCO"Uma funcao com retorno VOID não pode ser atribuida a uma variavel.");
           break;
         default:
           break;

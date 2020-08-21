@@ -43,6 +43,9 @@ int st_lookup ( char * name, char * escopo);
 /*Função para verificar se o retorno da função tipo INT está presente*/
 int checkReturn(char* escopo);
 
+/* Função para conferir a posição de memoria alocada para uma variável */
+int getMemLoc(char* nome, char* escopo);
+
 /* O procedimento printSymTab imprime uma lista formatada do conteúdo da tabela de símbolos no
  arquivo de listagem */
 void printSymTab(FILE * listing);

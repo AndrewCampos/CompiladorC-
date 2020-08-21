@@ -15,6 +15,7 @@
 
 typedef enum {  opADD, opSUB, opMULT, opDIV, opLT, opLEQUAL, opGT, opGREQUAL, opAND, opOR, opASSIGN, opALLOC, opIMMED, opLOAD, opSTORE,
                 opVEC, opGOTO, opIFF, opRET, opFUN, opEND, opPARAM, opCALL, opARG, opLAB, opHLT } OpKind;
+
 typedef enum {  Empty, IntConst, String } AddrKind;
 
 typedef struct {

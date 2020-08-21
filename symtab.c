@@ -137,7 +137,7 @@ void busca_main () {
   while ((l != NULL) && ((strcmp("main",l->name) != 0 || l->IType == VAR)))
     l = l->next;
   if (l == NULL) {
-    fprintf(listing,VERMELHO"Erro semântico!"BRANCO" Função main não declarada\n");
+    fprintf(listing,VERMELHO"     Erro semântico!"BRANCO" Função main não declarada\n");
     Error = TRUE;
   }
 }
@@ -179,6 +179,19 @@ dataTypes getFunType(char* nome){
   }
   if (l == NULL) return -1;
   else return l->RetType;
+}
+
+int getMemLoc(char* nome, char* escopo){
+  int h = hash(nome);
+  BucketList l =  hashTable[h];
+  while ((l != NULL)){
+    if (strcmp(nome,l->name) == 0){
+      if(strcmp(escopo,l->escopo) == 0) break;
+    }
+    l = l->next;
+  }
+  if (l == NULL) return -1;
+  else return l->memloc;
 }
 
 void printSymTab(FILE * listing) {

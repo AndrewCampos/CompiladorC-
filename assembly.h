@@ -5,8 +5,8 @@
 /* Kenneth C. Louden                                */
 /****************************************************/
 
-#define nregisters 32
-#define nregtemp 16
+#define nregisters 32 // quantidade de registradores
+#define nregtemp 16 // quantidade de registradores temporarios
 #define nregparam 10
 
 #define sploc 0  // tam 32 
