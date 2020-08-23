@@ -164,3 +164,31 @@ static void printSpaces(void)
    }
    UNINDENT;
  }
+
+ void nomeiaArquivos(char *nome){
+    int fnlen = strcspn(nome,".");
+    // aloca espaços para nomes
+    ArvSint   = (char*)calloc(8+fnlen+5,sizeof(char));
+    TabSimb   = (char*)calloc(8+fnlen+4,sizeof(char));
+    interCode = (char*)calloc(8+fnlen+4,sizeof(char));
+    assCode   = (char*)calloc(8+fnlen+5,sizeof(char));
+    binCode   = (char*)calloc(8+fnlen+5,sizeof(char));
+    // insere pasta '/gerados' ao caminho
+    strcpy(ArvSint,"gerados/");
+    strcpy(TabSimb,"gerados/");
+    strcpy(interCode,"gerados/");
+    strcpy(assCode,"gerados/");
+    strcpy(binCode,"gerados/");
+    // insere nome do arquivo ao caminho
+    strncat(ArvSint,nome,fnlen);
+    strncat(TabSimb,nome,fnlen);
+    strncat(interCode,nome,fnlen);
+    strncat(assCode,nome,fnlen);
+    strncat(binCode,nome,fnlen);
+    // insere extensão do arquivo
+    strcat(ArvSint,".tree");
+    strcat(TabSimb,".tab");
+    strcat(interCode,".itm");
+    strcat(assCode,".assb");
+    strcat(binCode,".binc");
+ }

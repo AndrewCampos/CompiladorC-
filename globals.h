@@ -79,6 +79,13 @@ typedef struct treeNode {
      dataTypes type; /* para checagem de tipo das exps */
    } TreeNode;
 
+/* Caminhos dos arquivos a serem gerados pela compilação do arquivo */
+char *ArvSint; // Caminho para a árvore sintática
+char *TabSimb; // Caminho para a tabela de simbolos
+char *interCode; // Caminho para o codigo intermediário
+char *assCode; // Caminho para o codigo assembly
+char *binCode; // caminho para o codigo binário
+
 /**************************************************/
 /***********   Flags for tracing       ************/
 /**************************************************/
