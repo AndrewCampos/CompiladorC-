@@ -65,20 +65,25 @@ void st_insert( char * name, int lineno, int op, char* escopo, dataTypes RetType
   }
 
   //Para inserir: não achou outra declaração, se achou verificar se o escopo é DIF e não é uma função
-  if ( l == NULL || (op != 0 && l->escopo != escopo && l->escopo != "global" && l->IType != FUN && l->IType != CALL)) { /* variável não está na tabela ainda */
-    l = (BucketList) malloc(sizeof(struct BucketListRec));
-    l->name = name;
-    l->lines = (LineList) malloc(sizeof(struct LineListRec));
-    l->lines->lineno = lineno;
-    l->vet = vet;
-    l->memloc = op;
-    l->IType = IType;
-    l->RetType = RetType;
-    l->StmtType = StmtType;
-    l->escopo = escopo;
-    l->lines->next = NULL;
-    l->next = hashTable[h];
-    hashTable[h] = l;
+  if ( l == NULL || (op != 0 && l->escopo != escopo && l->IType != FUN && l->IType != CALL)) { /* variável não está na tabela ainda */
+    if(l != NULL && strcmp(l->name,name) == 0 && strcmp(l->escopo,"global") == 0){
+      fprintf(listing,VERMELHO"[%d] Erro semântico!"BRANCO" Variavel '%s' já declarada no escopo global.\n",lineno,name);
+      Error = TRUE;
+    }else{
+      l = (BucketList) malloc(sizeof(struct BucketListRec));
+      l->name = name;
+      l->lines = (LineList) malloc(sizeof(struct LineListRec));
+      l->lines->lineno = lineno;
+      l->vet = vet;
+      l->memloc = op;
+      l->IType = IType;
+      l->RetType = RetType;
+      l->StmtType = StmtType;
+      l->escopo = escopo;
+      l->lines->next = NULL;
+      l->next = hashTable[h];
+      hashTable[h] = l;
+    }
   }
   else if( (l->IType == FUN  && IType == VAR) || (l->IType == CALL  && IType == VAR)){
     fprintf(listing,VERMELHO"[%d] Erro semântico!"BRANCO" Nome da variavel '%s' já utilizada como nome de função.\n",lineno,name);
@@ -87,11 +92,7 @@ void st_insert( char * name, int lineno, int op, char* escopo, dataTypes RetType
   else if( l->escopo == escopo && op != 0 ){
     fprintf(listing,VERMELHO"[%d] Erro semântico!"BRANCO" Variavel '%s' já declarada neste escopo.\n",lineno,name);
     Error = TRUE;
-  }
-  else if(l->escopo != escopo && (strcmp(l->escopo,"global") != 0) ){
-    //procura por variavel global antes de supor que não existe
-    fprintf(listing,VERMELHO"[%d] Erro semântico!"BRANCO" Variavel '%s' já declarada no escopo global.\n",lineno,name);
-    Error = TRUE;
+    
   }else if(l->escopo != escopo){
     while ((l != NULL)){
       if((strcmp(l->escopo, "global")==0)&& ((strcmp( name,l->name) == 0))){
