@@ -1,13 +1,7 @@
-void teste(void){
-    int i;
-}
-
-
 int main(void){
-    int i;
-    if(i==0){
-        i = 3;
+    int a;
+    while(a<=2){
+        a = a +1;
     }
-    teste();
     return 0;
 }

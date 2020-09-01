@@ -13,8 +13,9 @@
 #define nlabel_size 3
 #define ntemp_size 3
 
-typedef enum {  opADD, opSUB, opMULT, opDIV, opLT, opLEQUAL, opGT, opGREQUAL, opAND, opOR, opASSIGN, opALLOC, opIMMED, opLOAD, opSTORE,
-                opVEC, opGOTO, opIFF, opRET, opFUN, opEND, opPARAM, opCALL, opARG, opLAB, opHLT } OpKind;
+typedef enum {  opADD, opSUB, opMULT, opDIV, opBLT, opSLE, opBGT, opSGE, opBEQ, opBNE, opAND, opOR, opASSIGN,
+                opALLOC, opADDI, opSUBI, opLOAD, opSTORE, opVEC, opGOTO, opIFF, opRET, opFUN, opEND, opPARAM,
+                opCALL, opARG, opLABEL, opHLT } OpKind;
 
 typedef enum {  Empty, IntConst, String } AddrKind;
 

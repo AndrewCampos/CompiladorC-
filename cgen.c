@@ -13,7 +13,8 @@
 #include "cgen.h"
 #include "parse.h"
 #include "analyze.h"
-#include "assembly.h"
+//#include "assembly.h"
+#define nregtemp 15   // quantidade de registradores temporarios
 
 /* tmpOffset is the memory offset for temps
    It is decremented each time a temp is
@@ -30,7 +31,7 @@ int mainLocation;
 int memLoc;
 
 int nlabel = 0;
-int ntemp = 0;
+int ntemp = 1;
 int nparams = -1;
 
 Address aux;
@@ -40,11 +41,11 @@ Address empty;
 
 char var_escopo[30] = "global";
 
-const char *OpKindNames[] = {"add", "sub", "mult", "div", "lt", "lequal", "gt", "grequal", "and", "or", "atrib", "alloc", "immed", "load", "store",
-                             "vec", "goto", "iff", "ret", "fun", "end", "param", "call", "arg", "lab", "hlt"};
+const char *OpKindNames[] = {"add", "sub", "mult", "div", "blt", "lequal", "bgt", "grequal", "beq", "bne", "and", "or", "atrib",
+                            "alloc", "addi", "subi", "load", "store","vec", "goto", "iff", "ret", "fun", "end",
+                            "param", "call", "arg", "label", "hlt"};
 
-void quad_insert(OpKind op, Address addr1, Address addr2, Address addr3)
-{
+void quad_insert(OpKind op, Address addr1, Address addr2, Address addr3){
   Quad quad;
   quad.op = op;
   quad.addr1 = addr1;
@@ -54,12 +55,10 @@ void quad_insert(OpKind op, Address addr1, Address addr2, Address addr3)
   new->location = location;
   new->quad = quad;
   new->next = NULL;
-  if (head == NULL)
-  {
+  if (head == NULL){
     head = new;
   }
-  else
-  {
+  else{
     QuadList q = head;
     while (q->next != NULL)
       q = q->next;
@@ -68,44 +67,39 @@ void quad_insert(OpKind op, Address addr1, Address addr2, Address addr3)
   location++;
 }
 
-int quad_update(int loc, Address addr1, Address addr2, Address addr3)
-{
+int quad_update(int loc, Address addr1, Address addr2, Address addr3){
   QuadList q = head;
-  while (q != NULL)
-  {
+  while (q != NULL){
     if (q->location == loc)
       break;
     q = q->next;
   }
   if (q == NULL)
     return 0;
-  else
-  {
-    q->quad.addr1 = addr1;
-    q->quad.addr2 = addr2;
-    q->quad.addr3 = addr3;
+
+  else{
+    if(addr1.kind != Empty) q->quad.addr1 = addr1;
+    if(addr2.kind != Empty) q->quad.addr2 = addr2;
+    if(addr3.kind != Empty) q->quad.addr3 = addr3;
     return 1;
   }
 }
 
-char *newLabel()
-{
+char *newLabel(){
   char *label = (char *)malloc((nlabel_size + 3) * sizeof(char));
   sprintf(label, "L%d", nlabel);
   nlabel++;
   return label;
 }
 
-char *newTemp()
-{
+char *newTemp(){
   char *temp = (char *)malloc((ntemp_size + 3) * sizeof(char));
-  sprintf(temp, "$t%d", ntemp);
-  ntemp = (ntemp + 1) % nregtemp;
+  sprintf(temp, "$r%d", ntemp);
+  ntemp = (ntemp % nregtemp)+1;
   return temp;
 }
 
-Address addr_createEmpty()
-{
+Address addr_createEmpty(){
   Address addr;
   addr.kind = Empty;
   addr.contents.var.name = NULL;
@@ -113,28 +107,14 @@ Address addr_createEmpty()
   return addr;
 }
 
-Address addr_createIntConst(int val)
-{
+Address addr_createIntConst(int val){
   Address addr;
   addr.kind = IntConst;
   addr.contents.val = val;
   return addr;
 }
 
-/* Address addr_createString(char *name, char *scope)
-{
-  Address addr;
-  addr.kind = String;
-  addr.contents.var.name = (char *)malloc(strlen(name) * sizeof(char));
-  strcpy(addr.contents.var.name, name);
-  addr.contents.var.scope = (char *)malloc(strlen(name)* sizeof(char));
-  strcpy(addr.contents.var.scope,name);
-  printf("addr.contents.var.scope:%s \n", addr.contents.var.scope);
-  return addr;
-}*/
-
- Address addr_createString(char *name, char *scope)
-{
+Address addr_createString(char *name, char *scope){
   Address addr;
   addr.kind = String;
   addr.contents.var.name = (char *)malloc(strlen(name) * sizeof(char));
@@ -144,16 +124,15 @@ Address addr_createIntConst(int val)
     addr.contents.var.scope = (char *)malloc(strlen(name) * sizeof(char));
      strcpy(addr.contents.var.scope,name);
 
-     }else{
-  addr.contents.var.scope = (char *)malloc(strlen(scope)* sizeof(char));
-  strcpy(addr.contents.var.scope,scope);
-}
- return addr;
+  }else{
+    addr.contents.var.scope = (char *)malloc(strlen(scope)* sizeof(char));
+    strcpy(addr.contents.var.scope,scope);
+  }
+  return addr;
 }
 
 /* O procedimento genStmt() gera código em um nó do tipo declaração */
-static void genStmt(TreeNode *tree)
-{
+static void genStmt(TreeNode *tree){
   
   TreeNode *p1, *p2, *p3;
   Address addr1, addr2, addr3;
@@ -161,9 +140,8 @@ static void genStmt(TreeNode *tree)
   int loc1, loc2, loc3;
   char *label;
   char *temp;
-  switch (tree->kind.stmt)
-  {
 
+  switch (tree->kind.stmt){
   case IfK:
     if (TraceCode)
       emitComment("-> if");
@@ -174,8 +152,8 @@ static void genStmt(TreeNode *tree)
     cGen(p1);
     addr1 = aux;
     // if false
-    loc1 = location;
-    quad_insert(opIFF, addr1, empty, empty);
+    loc1 = location-1;
+    //quad_insert(opIFF, addr1, empty, empty);
     // if true
     cGen(p2);
     //goes to end
@@ -183,20 +161,21 @@ static void genStmt(TreeNode *tree)
     quad_insert(opGOTO, empty, empty, empty); //jump else
     // end if
     label = newLabel();
-    quad_insert(opLAB,addr_createString(label, var_escopo), empty, empty);
+    quad_insert(opLABEL,addr_createString(label, var_escopo), empty, empty);
     // if false comes to here
-    quad_update(loc1, addr1,addr_createString(label, var_escopo), empty);
+
+    quad_update(loc1, empty, empty,addr_createString(label, var_escopo));
     // else
     cGen(p3);
-    if (p3 != NULL)
-    {
+
+    if (p3 != NULL){
       // goes to the end
       loc3 = location;
       quad_insert(opGOTO, empty, empty, empty); //sair else
     }
     label = newLabel();
     // final
-    quad_insert(opLAB,addr_createString(label, var_escopo), empty, empty);
+    quad_insert(opLABEL,addr_createString(label, var_escopo), empty, empty);
     quad_update(loc2,addr_createString(label, var_escopo), empty, empty);
     if (p3 != NULL)
       quad_update(loc3,addr_createString(label, var_escopo), empty, empty);
@@ -207,26 +186,25 @@ static void genStmt(TreeNode *tree)
   case WhileK:
     if (TraceCode)
       emitComment("-> while");
-    p1 = tree->child[0];//arg
-    p2 = tree->child[1];//body
+    p1 = tree->child[0]; // argumento
+    p2 = tree->child[1]; // corpo
     // inicio do while
     label = newLabel();
-    quad_insert(opLAB,addr_createString(label, var_escopo), empty, empty); //you only know the label in the end of stmt
+    quad_insert(opLABEL,addr_createString(label, var_escopo), empty, empty); //cria a label vazia
     // condicao while
-    cGen(p1); //recursive
+    cGen(p1);
     addr1 = aux;
-    // if condition is false
-    loc1 = location;
-    quad_insert(opIFF, addr1, empty, empty);
+    // caso a condição seja falsa
+    loc1 = location-1;
     // while
     cGen(p2); //body
     loc3 = location;
-    quad_insert(opGOTO,addr_createString(label, var_escopo), empty, empty); //return to statement till the condition is false
+    quad_insert(opGOTO,addr_createString(label, var_escopo), empty, empty); // refaz o while enquanto é verdadeiro
     // final
     label = newLabel();
-    quad_insert(opLAB,addr_createString(label, var_escopo), empty, empty); //here you know the label
+    quad_insert(opLABEL,addr_createString(label, var_escopo), empty, empty); 
     //if condition is false comes to here
-    quad_update(loc1, addr1,addr_createString(label, var_escopo), empty);//update quad bc you r in the end 
+    quad_update(loc1,empty,empty,addr_createString(label, var_escopo)); // atualiza label com a localização do fim do while
     if (TraceCode)
       emitComment("<- while");
     break;
@@ -245,23 +223,27 @@ static void genStmt(TreeNode *tree)
     cGen(p2);
     addr2 = aux;
     quad_insert(opASSIGN, addr1, addr2, empty);
-    quad_insert(opSTORE, aux1, aux2, addr1);
+    quad_insert(opSTORE, empty, addr1, aux1);
     if (TraceCode)
       emitComment("<- atrib");
     break;
 
   case ReturnINT:
     if (TraceCode)
-      emitComment("-> return");
+      emitComment("-> returnVOID");
     p1 = tree->child[0];
     cGen(p1);
-    // se tem retorno
-    if (p1 != NULL)
-      addr1 = aux;
-    //se não tem retorno
-    else
-      addr1 = empty;
+    addr1 = aux;
     quad_insert(opRET, addr1, empty, empty);
+    if (TraceCode)
+      emitComment("<- returnINT");
+    break;
+
+  case ReturnVOID:
+    if (TraceCode)
+      emitComment("-> returnVOID");
+    addr1 = empty;
+    quad_insert(opRET, empty, empty, empty);
     if (TraceCode)
       emitComment("<- return");
     break;
@@ -272,24 +254,23 @@ static void genStmt(TreeNode *tree)
 } /* genStmt */
 
 /* Procedure genExp generates code at an expression node */
-static void genExp(TreeNode *tree)
-{
+static void genExp(TreeNode *tree){
   TreeNode *p1, *p2, *p3;
   Address addr1, addr2, addr3;
   int loc1, loc2, loc3;
   char *label;
   char *temp;
   char *s = "";
-  switch (tree->kind.exp)
-  {
+
+  switch (tree->kind.exp){
   case ConstK:
     if (TraceCode){
       emitComment("-> Const");
     }
-    addr1 = addr_createIntConst(tree->attr.val);
     temp = newTemp();
+    addr1 = addr_createIntConst(tree->attr.val);
     aux = addr_createString(temp, var_escopo);
-    quad_insert(opIMMED, aux, addr1, empty);
+    quad_insert(opADDI, aux, addr_createString("$zero", var_escopo), addr1);
     if (TraceCode)
       emitComment("<- Const");
     break;
@@ -312,7 +293,7 @@ static void genExp(TreeNode *tree)
     else{ // caso não seja vetor
       temp = newTemp();
       addr1 = addr_createString(temp, var_escopo);
-      quad_insert(opLOAD, addr1, aux, empty);
+      quad_insert(opLOAD, empty, addr1, aux);
       var = aux;
       offset = empty;
       aux = addr1;
@@ -321,11 +302,11 @@ static void genExp(TreeNode *tree)
       emitComment("<- Id");
     break;
 
-  case TypeK:
+  /*case TypeK:
     if(TraceCode) emitComment("-> Type");
     p1 = tree->child[0];
     cGen(p1);
-    break;
+    break;*/
 
   case FunDeclK:
     strcpy(var_escopo,tree->attr.name);
@@ -409,8 +390,8 @@ static void genExp(TreeNode *tree)
     addr2 = aux;
     temp = newTemp();
     aux = addr_createString(temp, var_escopo);
-    switch (tree->attr.op)
-    {
+
+    switch (tree->attr.op){
     case SOM:
       quad_insert(opADD, aux, addr1, addr2);
       break;
@@ -418,57 +399,39 @@ static void genExp(TreeNode *tree)
       quad_insert(opSUB, aux, addr1, addr2);
       break;
     case MUL:
-      //printf("mult\n");
       quad_insert(opMULT, aux, addr1, addr2);
       break;
     case DIV:
-      //printf("over\n");
       quad_insert(opDIV, aux, addr1, addr2);
       break;
     case MENO:
-      //printf("lt\n");
-      quad_insert(opLT, aux, addr1, addr2);
+      quad_insert(opSGE, aux, addr1, addr2);
+      addr1 = addr_createString(newTemp(),var_escopo);
+      addr2 = addr_createIntConst(0);
+      quad_insert(opADDI, addr1, addr_createString("$zero", var_escopo), addr2);
+      quad_insert(opBEQ,aux,addr1,empty);
       break;
     case MEIG:
-      //printf("leq\n");
-      quad_insert(opLEQUAL, aux, addr1, addr2);
+      quad_insert(opBGT,addr1,addr2,empty);
       break;
     case MAIO:
-      //printf("gt\n");
-      quad_insert(opGT, aux, addr1, addr2);
+      quad_insert(opSLE, aux, addr1, addr2);
+      addr1 = addr_createString(newTemp(),var_escopo);
+      addr2 = addr_createIntConst(0);
+      quad_insert(opADDI, addr1, addr_createString("$zero", var_escopo), addr2);
+      quad_insert(opBEQ,aux,addr1,empty);
       break;
     case MAIG:
-      //printf("greq\n");
-      quad_insert(opGREQUAL, aux, addr1, addr2);
+      quad_insert(opBLT,addr1,addr2,empty);
       break;
     case IGL:
-      //printf("equal\n");
-      quad_insert(opGREQUAL, aux, addr1, addr2);
-      addr3 = aux;
-      temp = newTemp();
-      aux =addr_createString(temp, var_escopo);
-      quad_insert(opLEQUAL, aux, addr1, addr2);
-      addr1 = addr3;
-      addr2 = aux;
-      temp = newTemp();
-      aux =addr_createString(temp, var_escopo);
-      quad_insert(opAND, aux, addr1, addr2);
+      quad_insert(opBNE,addr1,addr2,empty);
       break;
     case DIF:
-      //printf("dif\n");
-      quad_insert(opGT, aux, addr1, addr2);
-      addr3 = aux;
-      temp = newTemp();
-      aux =addr_createString(temp, var_escopo);
-      quad_insert(opLT, aux, addr1, addr2);
-      addr1 = addr3;
-      addr2 = aux;
-      temp = newTemp();
-      aux =addr_createString(temp, var_escopo);
-      quad_insert(opOR, aux, addr1, addr2);
+      quad_insert(opBEQ,addr1,addr2,empty);
       break;
     default:
-      emitComment("BUG: Unknown operator");
+      emitComment(N_VERM"Erro ao criar quádrupla!"RESET" Operador desconhecido.");
       break;
     }
     if (TraceCode)
@@ -478,7 +441,7 @@ static void genExp(TreeNode *tree)
   default:
     break;
   }
-} /* genExp */
+}
 
 /* Procedimento recursivo que gera o código intermediário pela árvore sintática */
 static void cGen(TreeNode *tree){
@@ -489,11 +452,11 @@ static void cGen(TreeNode *tree){
   if (tree != NULL){
     switch (tree->nodekind){
     case StmtK:
-      if(TraceAnalyze) emitComment("-> Stmt");
+      if(TraceCode) emitComment("-> Stmt");
       genStmt(tree);
       break;
     case ExpK:
-      if(TraceAnalyze) emitComment("-> Exp");
+      if(TraceCode) emitComment("-> Exp");
       genExp(tree);
       break;
     default:
@@ -513,8 +476,8 @@ void printCode(){
     a2 = q->quad.addr2;
     a3 = q->quad.addr3;
     printf("(%s, ", OpKindNames[q->quad.op]);
-    switch (a1.kind)
-    {
+
+    switch (a1.kind){
     case Empty:
       printf("_");
       break;
@@ -528,8 +491,8 @@ void printCode(){
       break;
     }
     printf(", ");
-    switch (a2.kind)
-    {
+
+    switch (a2.kind){
     case Empty:
       printf("_");
       break;
@@ -543,8 +506,8 @@ void printCode(){
       break;
     }
     printf(", ");
-    switch (a3.kind)
-    {
+
+    switch (a3.kind){
     case Empty:
       printf("_");
       break;
@@ -572,18 +535,15 @@ void printCode(){
  * of the code file, and is used to print the
  * file name as a comment in the code file
  */
-void codeGen(TreeNode *syntaxTree, char *codefile)
-{
+void codeGen(TreeNode *syntaxTree, char *codefile){
   char *s = malloc(strlen(codefile) + 7);
   strcat(s, codefile);
-  emitComment(s);
   empty = addr_createEmpty();
   cGen(syntaxTree);
   quad_insert(opHLT, empty, empty, empty);
   if(!Error) printCode();
 }
 
-QuadList getIntermediate()
-{
+QuadList getIntermediate(){
   return head;
 }

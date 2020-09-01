@@ -36,7 +36,7 @@ void mainc(void)
 {
 	int i;
 	i = 0;
-	e =0;
+	e = sort();
 	while (i < 10){
 		vet[i] = input();
 		i = i + 1;

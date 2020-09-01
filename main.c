@@ -16,8 +16,8 @@
 #include "analyze.h"
 #if !NO_CODE
 #include "cgen.h"
-#include "assembly.h"
-#include "binary.h"
+//#include "assembly.h"
+//#include "binary.h"
 #endif
 #endif
 #endif
@@ -30,8 +30,8 @@ FILE * code;
 
 int TraceScan = FALSE; // Imprimir tokens
 int TraceParse = FALSE; // Imprimir árvore sintática
-int TraceAnalyze = TRUE; // Imprimir tabela de simbolos
-int TraceCode = TRUE; // Imprimir nós da geração de código
+int TraceAnalyze = FALSE; // Imprimir tabela de simbolos
+int TraceCode = FALSE; // Imprimir nós da geração de código
 int Error = FALSE; // Flag que marca a existência de erros
 
 int main( int argc, char * argv[] ) {
@@ -54,7 +54,7 @@ int main( int argc, char * argv[] ) {
   }
   listing = stdout; /* send listing to screen */
   fprintf(listing,N_BRC"\nCOMPILAÇÃO DO ARQUIVO C-\n"RESET);
-  fprintf(listing,"Source: "VERD"./%s\n\n"RESET,path);
+  fprintf(listing,"Fonte: "VERD"./%s\n\n"RESET,path);
 
 
 #if NO_PARSE
