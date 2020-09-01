@@ -1,12 +1,11 @@
 #include "globals.h"
 
-/* set NO_PARSE to TRUE to get a scanner-only compiler */
+/* Flag com valor TRUE impede a análise sintática */
 #define NO_PARSE FALSE
-/* set NO_ANALYZE to TRUE to get a parser-only compiler */
+/* Flag com valor TRUE impede a análise semântica */
 #define NO_ANALYZE FALSE
-
-/* set NO_CODE to TRUE to get a compiler that does not generate code */
-#define NO_CODE TRUE
+/* Flag com valor TRUE impede a geração de código intermediário */
+#define NO_CODE FALSE
 
 #include "util.h"
 #if NO_PARSE
@@ -24,26 +23,23 @@
 #endif
 
 extern int check_return;
-/* allocate global variables */
 int lineno = 1;
 FILE * source;
 FILE * listing;
 FILE * code;
 
-/* allocate and set tracing flags */
-int EchoSource = FALSE;
-int TraceScan = FALSE;
-int TraceParse = TRUE;
-int TraceAnalyze = TRUE;
-int TraceCode = FALSE;
-int Error = FALSE;
+int TraceScan = FALSE; // Imprimir tokens
+int TraceParse = FALSE; // Imprimir árvore sintática
+int TraceAnalyze = TRUE; // Imprimir tabela de simbolos
+int TraceCode = TRUE; // Imprimir nós da geração de código
+int Error = FALSE; // Flag que marca a existência de erros
 
 int main( int argc, char * argv[] ) {
   TreeNode * syntaxTree;
   char pgm[120]; /* nome do arquivo do código fonte */
   char path[120];
   if (argc != 2) {
-    fprintf(stderr,VERMELHO"Arquivo não especificado.\n Uso: %s <nome do arquivo>\n"BRANCO,argv[0]);
+    fprintf(stderr,N_VERM"Arquivo não especificado.\n Uso: %s <nome do arquivo>\n"RESET,argv[0]);
     exit(1);
   }
   strcpy(path,"codigos/");
@@ -53,11 +49,12 @@ int main( int argc, char * argv[] ) {
   strcat(path,pgm);
   source = fopen(path,"r");
   if (source==NULL) {
-    fprintf(stderr,VERMELHO"Arquivo %s não encontrado.\n"BRANCO,path);
+    fprintf(stderr,N_VERM"Arquivo %s não encontrado.\n"RESET,path);
     exit(1);
   }
   listing = stdout; /* send listing to screen */
-  fprintf(listing,VERDE"\nCOMPILAÇÃO DO ARQUIVO C-: %s\n"BRANCO,pgm);
+  fprintf(listing,N_BRC"\nCOMPILAÇÃO DO ARQUIVO C-\n"RESET);
+  fprintf(listing,"Source: "VERD"./%s\n\n"RESET,path);
 
 
 #if NO_PARSE
@@ -67,21 +64,18 @@ int main( int argc, char * argv[] ) {
   if (TraceParse) {
     if(Error == TRUE)
       exit(-1);
-    fprintf(listing,"\nÁrvore Sintática:\n");
+    fprintf(listing,N_AZ"Árvore Sintática:\n"RESET);
     printTree(syntaxTree);
+  }
 
-
-#if !NO_ANALYZE7 
-  if (TraceAnalyze) fprintf(listing,AZUL"\nConstruindo Tabela de Simbolos...\n"BRANCO);
-    buildSymtab(syntaxTree);
-    if (TraceAnalyze) fprintf(listing,AZUL"\nChecando Tipos...\n"BRANCO);
-    check_return = TRUE;
-    typeCheck(syntaxTree);
-   if (TraceAnalyze) fprintf(listing,VERDE"Análise Concluida!\n"BRANCO); 
+#if !NO_ANALYZE
+  if (TraceAnalyze) fprintf(listing,AZ"Construindo Tabela de Simbolos...\n"RESET);
+  buildSymtab(syntaxTree);
+  if (TraceAnalyze) fprintf(listing,N_VERD"\nAnálise Concluida!\n"RESET); 
 
 #if !NO_CODE
-   if (!Error){
-   char * codefile;
+  if (!Error){
+  char * codefile;
     int fnlen = strcspn(pgm,".");
     codefile = (char *) calloc(12+fnlen+5, sizeof(char));
     strcpy(codefile,"binarios/");
@@ -89,18 +83,16 @@ int main( int argc, char * argv[] ) {
     strcat(codefile,".inst");
     code = fopen(codefile,"w");
     if (code == NULL) {
-      printf(VERMELHO"Não foi possível abrir o arquivo '%s'!\n"BRANCO,codefile);
+      printf(N_VERM"Não foi possível abrir o arquivo '%s'!\n"RESET,codefile);
       exit(1);
     }
-    fprintf(listing,AZUL"Criando código intermediário...\n"BRANCO);
+    if(TraceCode) fprintf(listing,AZ"Criando código intermediário...\n"RESET);
     codeGen(syntaxTree,codefile);                             //GERADOR DE COD. INTERMED.
-    fprintf(listing,VERDE"Código intermediário criado com sucesso!\n"BRANCO);
     fclose(code);
-   } 
+  } 
 #endif
 #endif
 #endif
   fclose(source);
   return 0;
-}
 }

@@ -5,5 +5,9 @@ void teste(void){
 
 int main(void){
     int i;
+    if(i==0){
+        i = 3;
+    }
+    teste();
     return 0;
 }

@@ -17,8 +17,7 @@
 
 /* tmpOffset is the memory offset for temps
    It is decremented each time a temp is
-   stored, and incremeted when loaded again
-*/
+   stored, and incremeted when loaded again */
 static int tmpOffset = 0;
 
 /* prototype for internal recursive code generator */
@@ -28,6 +27,7 @@ QuadList head = NULL;
 
 int location = 0;
 int mainLocation;
+int memLoc;
 
 int nlabel = 0;
 int ntemp = 0;
@@ -139,14 +139,14 @@ Address addr_createIntConst(int val)
   addr.kind = String;
   addr.contents.var.name = (char *)malloc(strlen(name) * sizeof(char));
   strcpy(addr.contents.var.name,name);
+
   if(scope == NULL){
-   // printf("é null \n");
     addr.contents.var.scope = (char *)malloc(strlen(name) * sizeof(char));
-     strcpy(addr.contents.var.scope,name);}
-  else {
+     strcpy(addr.contents.var.scope,name);
+
+     }else{
   addr.contents.var.scope = (char *)malloc(strlen(scope)* sizeof(char));
   strcpy(addr.contents.var.scope,scope);
- // printf("name: %s, addr.contents.var.scope:%s \n", name, addr.contents.var.scope);
 }
  return addr;
 }
@@ -154,7 +154,7 @@ Address addr_createIntConst(int val)
 /* O procedimento genStmt() gera código em um nó do tipo declaração */
 static void genStmt(TreeNode *tree)
 {
-  printf("Stmt: %d\n",tree->kind.stmt);
+  
   TreeNode *p1, *p2, *p3;
   Address addr1, addr2, addr3;
   Address aux1, aux2;
@@ -274,23 +274,18 @@ static void genStmt(TreeNode *tree)
 /* Procedure genExp generates code at an expression node */
 static void genExp(TreeNode *tree)
 {
-  printf("Exp: %d ",tree->kind.exp);
   TreeNode *p1, *p2, *p3;
   Address addr1, addr2, addr3;
   int loc1, loc2, loc3;
   char *label;
   char *temp;
   char *s = "";
-  //printf("entrou no genExp \n");
-  //printf("var_escopo %s \n", var_escopo);
-  //printf("%d \n",tree->kind.exp);
-  //printf("tree->name %s\n",tree->attr.name);
   switch (tree->kind.exp)
   {
   case ConstK:
-    printf("ConstK \n");
-    if (TraceCode)
+    if (TraceCode){
       emitComment("-> Const");
+    }
     addr1 = addr_createIntConst(tree->attr.val);
     temp = newTemp();
     aux = addr_createString(temp, var_escopo);
@@ -300,15 +295,11 @@ static void genExp(TreeNode *tree)
     break;
 
   case IdK:
-    printf("IdK \n");
     if (TraceCode)
       emitComment("-> Id");
     aux = addr_createString(tree->attr.name, var_escopo);
-    // printf("tree size: %d \n", tree->size);
     p1 = tree->child[0];
-    if (p1 != NULL)
-    {
-      //printf("entrou no vec \n");
+    if (p1 != NULL){ // caso seja um vetor
       temp = newTemp();
       addr1 =addr_createString(temp, var_escopo);
       addr2 = aux;
@@ -318,9 +309,7 @@ static void genExp(TreeNode *tree)
       offset = aux;
       aux = addr1;
     }
-    else
-    {
-      // printf("não entrou no vec \n");
+    else{ // caso não seja vetor
       temp = newTemp();
       addr1 = addr_createString(temp, var_escopo);
       quad_insert(opLOAD, addr1, aux, empty);
@@ -333,16 +322,15 @@ static void genExp(TreeNode *tree)
     break;
 
   case TypeK:
-  printf("TypeK\n");
+    if(TraceCode) emitComment("-> Type");
     p1 = tree->child[0];
     cGen(p1);
     break;
 
   case FunDeclK:
     strcpy(var_escopo,tree->attr.name);
-    printf("FundeclK(%s) %s\n",tree->attr.name,var_escopo);
     if (TraceCode)
-      emitComment("-> Fun");
+      emitComment(" -> Fun");
     // if main
     if (strcmp(tree->attr.name, "main") == 0)
       mainLocation = location;
@@ -363,7 +351,6 @@ static void genExp(TreeNode *tree)
     break;
 
   case AtivK:
-    printf("AtivK \n");
     if (TraceCode)
       emitComment("-> Call");
     //Address a1 = addr_createIntConst(tree->params);
@@ -388,7 +375,6 @@ static void genExp(TreeNode *tree)
     break;
 
   case ParamK:
-    printf("ParamK \n");
     if (TraceCode)
       emitComment("-> Param");
     quad_insert(opARG, addr_createString(tree->attr.name, var_escopo), empty, addr_createString(var_escopo,var_escopo));
@@ -397,24 +383,22 @@ static void genExp(TreeNode *tree)
     break;
 
   case VarDeclK:
-    printf("VardeclK\n");
-    int memLoc = getMemLoc(tree->attr.name,var_escopo);
+    memLoc = getMemLoc(tree->attr.name,var_escopo);
     if (TraceCode)
-      emitComment("-> Var");
+      emitComment("-> Var ");
     
-    if (memLoc != -1)
-    {
+    if (memLoc > 0){
       quad_insert(opALLOC, addr_createString(tree->attr.name, var_escopo), addr_createIntConst(memLoc), addr_createString(var_escopo,var_escopo));
+    }else{
+      printf(N_VERM "Erro ao alocar a variável '%s'!\n" RESET,tree->attr.name);
+      Error = TRUE;
+      return;
     }
-    else
-      printf(VERMELHO "Erro ao alocar a variável '%s'!\n" BRANCO,tree->attr.name);
-    
     if (TraceCode)
       emitComment("<- Var");
     break;
 
   case OpK:
-    printf("OpK: %d \n",tree->attr.op);
     if (TraceCode)
       emitComment("-> Op");
     p1 = tree->child[0];
@@ -428,11 +412,9 @@ static void genExp(TreeNode *tree)
     switch (tree->attr.op)
     {
     case SOM:
-      // printf("plus \n");
       quad_insert(opADD, aux, addr1, addr2);
       break;
     case SUB:
-      //printf("dif\n");
       quad_insert(opSUB, aux, addr1, addr2);
       break;
     case MUL:
@@ -500,41 +482,33 @@ static void genExp(TreeNode *tree)
 
 /* Procedimento recursivo que gera o código intermediário pela árvore sintática */
 static void cGen(TreeNode *tree){
-  printf(AMARELO"Inicio cGen:\n"BRANCO);
-
-  if(tree==NULL)printf("NULO\n");
-
+  if(TraceCode){
+    emitComment(AMAR"Inicio cGen:"RESET);
+    if(tree==NULL)emitComment("NULO");
+  }
   if (tree != NULL){
-  printf("Tipo do nó: %d - ",tree->nodekind);
     switch (tree->nodekind){
     case StmtK:
+      if(TraceAnalyze) emitComment("-> Stmt");
       genStmt(tree);
       break;
     case ExpK:
+      if(TraceAnalyze) emitComment("-> Exp");
       genExp(tree);
       break;
     default:
       break;
     }
 
-    if (nparams == -1){
-      cGen(tree->sibling);
-
-    }else{
-      if (nparams == 0){
-        cGen(tree->sibling);
-      }
-    }
+    if (nparams == -1 || nparams == 0) cGen(tree->sibling);
   }
 }
 
-void printCode()
-{
-  // printf("entrou no print \n");
+void printCode(){
   QuadList q = head;
   Address a1, a2, a3;
-  while (q != NULL)
-  {
+  printf(N_AZ"\nC- Intermediate Code\n"RESET);
+  while (q != NULL){
     a1 = q->quad.addr1;
     a2 = q->quad.addr2;
     a3 = q->quad.addr3;
@@ -586,6 +560,7 @@ void printCode()
     printf(")\n");
     q = q->next;
   }
+  fprintf(listing,N_VERD"Código intermediário criado com sucesso!\n\n"RESET);
 }
 
 /**********************************************/
@@ -600,15 +575,12 @@ void printCode()
 void codeGen(TreeNode *syntaxTree, char *codefile)
 {
   char *s = malloc(strlen(codefile) + 7);
-  strcpy(s, "File: ");
   strcat(s, codefile);
-  emitComment("\nC- Intermediate Code");
   emitComment(s);
   empty = addr_createEmpty();
   cGen(syntaxTree);
   quad_insert(opHLT, empty, empty, empty);
-  printCode();
-  emitComment(AZUL"Fim da Execução!\n"BRANCO);
+  if(!Error) printCode();
 }
 
 QuadList getIntermediate()

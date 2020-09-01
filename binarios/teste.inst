@@ -1,0 +1,93 @@
+// binarios/teste.inst
+// [0;33mInicio cGen:[0m
+// -> Exp
+//  -> Fun
+// [0;33mInicio cGen:[0m
+// -> Exp
+// -> Type
+// [0;33mInicio cGen:[0m
+// NULO
+// [0;33mInicio cGen:[0m
+// NULO
+// [0;33mInicio cGen:[0m
+// -> Exp
+// -> Var 
+// <- Var
+// [0;33mInicio cGen:[0m
+// NULO
+// <- Fun
+// [0;33mInicio cGen:[0m
+// -> Exp
+//  -> Fun
+// [0;33mInicio cGen:[0m
+// -> Exp
+// -> Type
+// [0;33mInicio cGen:[0m
+// NULO
+// [0;33mInicio cGen:[0m
+// NULO
+// [0;33mInicio cGen:[0m
+// -> Exp
+// -> Var 
+// <- Var
+// [0;33mInicio cGen:[0m
+// -> Stmt
+// -> if
+// [0;33mInicio cGen:[0m
+// -> Exp
+// -> Op
+// [0;33mInicio cGen:[0m
+// -> Exp
+// -> Id
+// <- Id
+// [0;33mInicio cGen:[0m
+// NULO
+// [0;33mInicio cGen:[0m
+// -> Exp
+// -> Const
+// <- Const
+// [0;33mInicio cGen:[0m
+// NULO
+// <- Op
+// [0;33mInicio cGen:[0m
+// NULO
+// [0;33mInicio cGen:[0m
+// -> Stmt
+// -> atrib
+// [0;33mInicio cGen:[0m
+// -> Exp
+// -> Id
+// <- Id
+// [0;33mInicio cGen:[0m
+// NULO
+// [0;33mInicio cGen:[0m
+// -> Exp
+// -> Const
+// <- Const
+// [0;33mInicio cGen:[0m
+// NULO
+// <- atrib
+// [0;33mInicio cGen:[0m
+// NULO
+// [0;33mInicio cGen:[0m
+// NULO
+// <- if
+// [0;33mInicio cGen:[0m
+// -> Exp
+// -> Call
+// <- Call
+// [0;33mInicio cGen:[0m
+// -> Stmt
+// -> return
+// [0;33mInicio cGen:[0m
+// -> Exp
+// -> Const
+// <- Const
+// [0;33mInicio cGen:[0m
+// NULO
+// <- return
+// [0;33mInicio cGen:[0m
+// NULO
+// <- Fun
+// [0;33mInicio cGen:[0m
+// NULO
