@@ -470,7 +470,7 @@ static void cGen(TreeNode *tree){
 void printCode(){
   QuadList q = head;
   Address a1, a2, a3;
-  printf(N_AZ"\nC- Intermediate Code\n"RESET);
+  printf(N_AZ"\nCódigo Intermediário:\n"RESET);
   while (q != NULL){
     a1 = q->quad.addr1;
     a2 = q->quad.addr2;

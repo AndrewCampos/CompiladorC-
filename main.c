@@ -29,8 +29,8 @@ FILE * listing;
 FILE * code;
 
 int TraceScan = FALSE; // Imprimir tokens
-int TraceParse = FALSE; // Imprimir árvore sintática
-int TraceAnalyze = FALSE; // Imprimir tabela de simbolos
+int TraceParse = TRUE; // Imprimir árvore sintática
+int TraceAnalyze = TRUE; // Imprimir tabela de simbolos
 int TraceCode = FALSE; // Imprimir nós da geração de código
 int Error = FALSE; // Flag que marca a existência de erros
 

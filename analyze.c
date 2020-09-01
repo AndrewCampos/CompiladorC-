@@ -2,6 +2,7 @@
 #include "symtab.h"
 #include "analyze.h"
 #include <stdio.h>
+#define INDIF -1
 
 /* counter for variable memory locations */
 static int location = 0;
@@ -58,14 +59,14 @@ static void insertNode( TreeNode * t) {
           printf(N_VERM"[%d] Erro Semantico!"RESET" Retorno da função '%s' incompatível.\n",t->lineno,escopo);
           Error = TRUE;
         }
-        st_insert("return",t->lineno,location++,escopo,INTTYPE, NULLL, RETT, t->vet); 
+        st_insert("return",t->lineno,INDIF,escopo,INTTYPE, NULLL, RETT, t->vet); 
         break;
       case ReturnINT:
         if(getFunType(escopo) == VOIDTYPE){
           printf(N_VERM"[%d] Erro Semantico!"RESET" Retorno da função '%s' incompatível.",t->lineno,escopo);
           Error = TRUE;
         }
-        st_insert("return",t->lineno,location++,escopo,INTTYPE, NULLL, RETT, t->vet); 
+        st_insert("return",t->lineno,INDIF,escopo,INTTYPE, NULLL, RETT, t->vet); 
         break;
       default:
         break;
@@ -84,7 +85,7 @@ static void insertNode( TreeNode * t) {
           else TIPO = INTTYPE;
           if (st_lookup(t->attr.name,escopo) == -1){
             /* não encontrado na tabela, inserir*/
-            st_insert(t->attr.name,t->lineno,location++, "global",t->type, TIPO,FUN, t->vet);}
+            st_insert(t->attr.name,t->lineno,INDIF, "global",t->type, TIPO,FUN, t->vet);}
           else{
           /* encontrado na tabela, erro semântico */
             fprintf(listing,N_VERM"[%d] Erro Semântico:"RESET" Múltiplas declarações da função '%s'.\n",t->lineno,t->attr.name);
@@ -92,15 +93,11 @@ static void insertNode( TreeNode * t) {
           }
           break;
         case ParamK:
-              st_insert(t->attr.name,t->lineno,location++,escopo,INTTYPE, TIPO, VAR, t->vet);
+            st_insert(t->attr.name,t->lineno,location++,escopo,INTTYPE, TIPO, VAR, t->vet);
           break;
         case VetorK:
-           if (st_lookup(t->attr.name, escopo) == -1)
-          /* não encontrado na tabela, inserir*/
-            st_insert(t->attr.name,t->lineno,location++, escopo,INTTYPE, TIPO, VAR , t->vet);
-          else
-          /* encontrado na tabela, verificar escopo */
-            st_insert(t->attr.name,t->lineno,0, escopo,INTTYPE, TIPO, VAR, t->vet);
+          st_insert(t->attr.name,t->lineno,location++, escopo,INTTYPE, TIPO, VAR, t->vet);
+          location += t->child[1]->attr.val -1;
           break;
         case IdK:
           if(t->add != 1){
@@ -119,7 +116,7 @@ static void insertNode( TreeNode * t) {
             Error = TRUE;
           }
           else {
-            st_insert(t->attr.name,t->lineno,location++,escopo,/*VOIDTYPE*/getFunType(t->attr.name), TIPO,CALL, t->vet);
+            st_insert(t->attr.name,t->lineno,INDIF,escopo,getFunType(t->attr.name), TIPO,CALL, t->vet);
           }
           break;
         default:

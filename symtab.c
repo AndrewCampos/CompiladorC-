@@ -258,7 +258,8 @@ void printSymTab(FILE * listing) {
           break;
         }
         fprintf(listing,"%-10s ",data);
-        fprintf(listing,"    %-3d     ",l->memloc);
+        if(l->memloc >= 0) fprintf(listing,"    %-3d     ",l->memloc);
+        else fprintf(listing,"    -       ");
         while (t != NULL) {
           fprintf(listing,"%3d; ",t->lineno);
           t = t->next;

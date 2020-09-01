@@ -32,15 +32,14 @@ void sort( int a[], int low, int high)
 	}
 }
 
-void mainc(void)
+void main(void)
 {
+	int teste[10];
 	int i;
 	i = 0;
-	e = sort();
 	while (i < 10){
 		vet[i] = input();
 		i = i + 1;
-		xyz();
 	}
 	sort(vet,0,10);
 	i = 0;
