@@ -29,8 +29,8 @@ FILE * listing;
 FILE * code;
 
 int TraceScan = FALSE; // Imprimir tokens
-int TraceParse = TRUE; // Imprimir árvore sintática
-int TraceAnalyze = TRUE; // Imprimir tabela de simbolos
+int TraceParse = FALSE; // Imprimir árvore sintática
+int TraceAnalyze = FALSE; // Imprimir tabela de simbolos
 int TraceCode = FALSE; // Imprimir nós da geração de código
 int Error = FALSE; // Flag que marca a existência de erros
 
@@ -61,9 +61,8 @@ int main( int argc, char * argv[] ) {
   while (getToken()!=ENDFILE);
 #else
   syntaxTree = parse();
+  if(Error == TRUE) exit(-1);
   if (TraceParse) {
-    if(Error == TRUE)
-      exit(-1);
     fprintf(listing,N_AZ"Árvore Sintática:\n"RESET);
     printTree(syntaxTree);
   }
@@ -87,7 +86,7 @@ int main( int argc, char * argv[] ) {
       exit(1);
     }
     if(TraceCode) fprintf(listing,AZ"Criando código intermediário...\n"RESET);
-    codeGen(syntaxTree,codefile);                             //GERADOR DE COD. INTERMED.
+    codeGen(syntaxTree);                             //GERADOR DE COD. INTERMED.
     fclose(code);
   } 
 #endif

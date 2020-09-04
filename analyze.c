@@ -59,14 +59,14 @@ static void insertNode( TreeNode * t) {
           printf(N_VERM"[%d] Erro Semantico!"RESET" Retorno da função '%s' incompatível.\n",t->lineno,escopo);
           Error = TRUE;
         }
-        st_insert("return",t->lineno,INDIF,escopo,INTTYPE, NULLL, RETT, t->vet); 
+        st_insert("return",t->lineno,0,escopo,INTTYPE, NULLL, RETT, t->vet); 
         break;
       case ReturnINT:
         if(getFunType(escopo) == VOIDTYPE){
           printf(N_VERM"[%d] Erro Semantico!"RESET" Retorno da função '%s' incompatível.",t->lineno,escopo);
           Error = TRUE;
         }
-        st_insert("return",t->lineno,INDIF,escopo,INTTYPE, NULLL, RETT, t->vet); 
+        st_insert("return",t->lineno,0,escopo,INTTYPE, NULLL, RETT, t->vet); 
         break;
       default:
         break;
@@ -137,7 +137,7 @@ void buildSymtab(TreeNode * syntaxTree){
   if (TraceAnalyze) fprintf(listing,AZ"Checando Tipos...\n"RESET);
   check_return = TRUE;
   typeCheck(syntaxTree);
-  if(!Error && TraceAnalyze) printSymTab(listing);
+  if(/*!Error &&*/ TraceAnalyze) printSymTab(listing);
 }
 
 static void typeError(TreeNode * t, char * message){

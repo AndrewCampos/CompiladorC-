@@ -153,7 +153,6 @@ static void genStmt(TreeNode *tree){
     addr1 = aux;
     // if false
     loc1 = location-1;
-    //quad_insert(opIFF, addr1, empty, empty);
     // if true
     cGen(p2);
     //goes to end
@@ -162,7 +161,7 @@ static void genStmt(TreeNode *tree){
     // end if
     label = newLabel();
     quad_insert(opLABEL,addr_createString(label, var_escopo), empty, empty);
-    // if false comes to here
+    // label para fim do if
 
     quad_update(loc1, empty, empty,addr_createString(label, var_escopo));
     // else
@@ -301,12 +300,6 @@ static void genExp(TreeNode *tree){
     if (TraceCode)
       emitComment("<- Id");
     break;
-
-  /*case TypeK:
-    if(TraceCode) emitComment("-> Type");
-    p1 = tree->child[0];
-    cGen(p1);
-    break;*/
 
   case FunDeclK:
     strcpy(var_escopo,tree->attr.name);
@@ -526,18 +519,8 @@ void printCode(){
   fprintf(listing,N_VERD"Código intermediário criado com sucesso!\n\n"RESET);
 }
 
-/**********************************************/
-/* the primary function of the code generator */
-/**********************************************/
-/* Procedure codeGen generates code to a code
- * file by traversal of the syntax tree. The
- * second parameter (codefile) is the file name
- * of the code file, and is used to print the
- * file name as a comment in the code file
- */
-void codeGen(TreeNode *syntaxTree, char *codefile){
-  char *s = malloc(strlen(codefile) + 7);
-  strcat(s, codefile);
+/* Procedimento que percorre a arvore sintática a fim de criar o código intermediário */
+void codeGen(TreeNode *syntaxTree){
   empty = addr_createEmpty();
   cGen(syntaxTree);
   quad_insert(opHLT, empty, empty, empty);

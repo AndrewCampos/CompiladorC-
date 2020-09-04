@@ -75,7 +75,8 @@ void st_insert( char * name, int lineno, int op, char* escopo, dataTypes RetType
       l->lines = (LineList) malloc(sizeof(struct LineListRec));
       l->lines->lineno = lineno;
       l->vet = vet;
-      l->memloc = op;
+      if(IType != RETT) l->memloc = op;
+      else l->memloc = -1;
       l->IType = IType;
       l->RetType = RetType;
       l->StmtType = StmtType;
