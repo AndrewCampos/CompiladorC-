@@ -198,10 +198,9 @@ int getMemLoc(char* nome, char* escopo){
 
 void printSymTab(FILE * listing) {
   int i;
-  fprintf(listing,N_AZ"                               Tabela de Simbolos:\n"RESET);
-  fprintf(listing,AZ"---------------------------------------------------------------------------------\n");
+  fprintf(listing,"---------------------------------------------------------------------------------\n");
   fprintf(listing,"Nome           Escopo  Tipo ID  Tipo Retorno  Tipo Param  Mem. Loc.  Num da linha\n");
-  fprintf(listing,"-------------  ------  -------  ------------  ----------  ---------  ------------\n"RESET);
+  fprintf(listing,"-------------  ------  -------  ------------  ----------  ---------  ------------\n");
   for (i=0;i<SIZE;++i) {
     if (hashTable[i] != NULL) {
       BucketList l = hashTable[i];

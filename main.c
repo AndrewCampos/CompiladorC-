@@ -32,10 +32,10 @@ int TraceScan = FALSE; // Imprimir tokens
 int TraceParse = FALSE; // Imprimir árvore sintática
 int TraceAnalyze = FALSE; // Imprimir tabela de simbolos
 int TraceCode = FALSE; // Imprimir nós da geração de código
+int CreateFiles = FALSE; // Criar arquivos de compilação
 int Error = FALSE; // Flag que marca a existência de erros
 
 int main( int argc, char * argv[] ) {
-  TreeNode * syntaxTree;
   char pgm[120]; /* nome do arquivo do código fonte */
   char path[120];
   if (argc != 2) {
@@ -55,7 +55,7 @@ int main( int argc, char * argv[] ) {
   listing = stdout; /* send listing to screen */
   fprintf(listing,N_BRC"\nCOMPILAÇÃO DO ARQUIVO C-\n"RESET);
   fprintf(listing,"Fonte: "VERD"./%s\n\n"RESET,path);
-
+  nomeiaArquivos(pgm);
 
 #if NO_PARSE
   while (getToken()!=ENDFILE);
@@ -88,7 +88,9 @@ int main( int argc, char * argv[] ) {
     if(TraceCode) fprintf(listing,AZ"Criando código intermediário...\n"RESET);
     codeGen(syntaxTree);                             //GERADOR DE COD. INTERMED.
     fclose(code);
+    if(CreateFiles) makeFiles();
   } 
+
 #endif
 #endif
 #endif

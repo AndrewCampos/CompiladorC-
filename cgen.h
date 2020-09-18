@@ -51,4 +51,6 @@ void codeGen(TreeNode * syntaxTree);
 
 QuadList getIntermediate();
 
+void printCode();
+
 #endif

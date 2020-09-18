@@ -460,63 +460,61 @@ static void cGen(TreeNode *tree){
   }
 }
 
-void printCode(){
+void printCode(QuadList head){
   QuadList q = head;
   Address a1, a2, a3;
-  printf(N_AZ"\nCódigo Intermediário:\n"RESET);
   while (q != NULL){
     a1 = q->quad.addr1;
     a2 = q->quad.addr2;
     a3 = q->quad.addr3;
-    printf("(%s, ", OpKindNames[q->quad.op]);
+    fprintf(listing,"(%s, ", OpKindNames[q->quad.op]);
 
     switch (a1.kind){
     case Empty:
-      printf("_");
+      fprintf(listing,"_");
       break;
     case IntConst:
-      printf("%d", a1.contents.val);
+      fprintf(listing,"%d", a1.contents.val);
       break;
     case String:
-      printf("%s", a1.contents.var.name);
+      fprintf(listing,"%s", a1.contents.var.name);
       break;
     default:
       break;
     }
-    printf(", ");
+    fprintf(listing,", ");
 
     switch (a2.kind){
     case Empty:
-      printf("_");
+      fprintf(listing,"_");
       break;
     case IntConst:
-      printf("%d", a2.contents.val);
+      fprintf(listing,"%d", a2.contents.val);
       break;
     case String:
-      printf("%s", a2.contents.var.name);
+      fprintf(listing,"%s", a2.contents.var.name);
       break;
     default:
       break;
     }
-    printf(", ");
+    fprintf(listing,", ");
 
     switch (a3.kind){
     case Empty:
-      printf("_");
+      fprintf(listing,"_");
       break;
     case IntConst:
-      printf("%d", a3.contents.val);
+      fprintf(listing,"%d", a3.contents.val);
       break;
     case String:
-      printf("%s", a3.contents.var.name);
+      fprintf(listing,"%s", a3.contents.var.name);
       break;
     default:
       break;
     }
-    printf(")\n");
+    fprintf(listing,")\n");
     q = q->next;
   }
-  fprintf(listing,N_VERD"Código intermediário criado com sucesso!\n\n"RESET);
 }
 
 /* Procedimento que percorre a arvore sintática a fim de criar o código intermediário */
@@ -524,7 +522,11 @@ void codeGen(TreeNode *syntaxTree){
   empty = addr_createEmpty();
   cGen(syntaxTree);
   quad_insert(opHLT, empty, empty, empty);
-  if(!Error) printCode();
+  if(!Error){
+    printf(N_AZ"\nCódigo Intermediário:\n"RESET);
+    printCode(head);
+    fprintf(listing,N_VERD"Código intermediário criado com sucesso!\n\n"RESET);
+    }
 }
 
 QuadList getIntermediate(){

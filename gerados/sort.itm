@@ -1,4 +1,3 @@
-Código Intermediário:
 (alloc, y, 10, global)
 (fun, minloc, _, _)
 (arg, a, _, minloc)

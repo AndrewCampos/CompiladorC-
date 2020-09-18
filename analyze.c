@@ -137,7 +137,10 @@ void buildSymtab(TreeNode * syntaxTree){
   if (TraceAnalyze) fprintf(listing,AZ"Checando Tipos...\n"RESET);
   check_return = TRUE;
   typeCheck(syntaxTree);
-  if(/*!Error &&*/ TraceAnalyze) printSymTab(listing);
+  if(/*!Error &&*/ TraceAnalyze){
+    printf(N_AZ"                               Tabela de Simbolos:\n"RESET);
+    printSymTab(listing);
+    }
 }
 
 static void typeError(TreeNode * t, char * message){
