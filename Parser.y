@@ -137,18 +137,18 @@ lista-parametros: lista-parametros VIRG lista-parametros {
 ;
 
 tipo-parametro: tipo ID {
-          $$ = newExpNode(ParamK);
+          $$ = newExpNode(VarParamK);
           $$->attr.name = copyString(id);
-          $$->kind.exp = ParamK;
+          $$->kind.exp = VarParamK;
           $$->size = 0;
           $$->lineno = lineno;
           $$->type = $1->type;
           $$->child[0] = $1;
         } | tipo ID ACO FCO{
-         $$ = newExpNode(ParamK);
+         $$ = newExpNode(VetParamK);
           $$->child[0] = $1;
           $$->attr.name = copyString(id);
-          $$->kind.exp = ParamK;
+          $$->kind.exp = VetParamK;
           $$->size = 0;
           $$->lineno = lineno;
           $$->type = $1->type;
@@ -350,7 +350,7 @@ fator: APR exp FPR { $$ = $2; }
      | NUM {
             $$ = newExpNode(ConstK);
             $$->type = INTTYPE;
-            $$->attr.name = NULL;
+            $$->attr.name = "teste";
             $$->attr.val = atoi(tokenString);
             }
 ;

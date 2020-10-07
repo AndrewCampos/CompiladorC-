@@ -56,8 +56,15 @@
 
 #define RESET "\e[0m"    // Texto padrão
 
+#define nregisters 32 // numero de registradores
+#define nregtemp 20 // numero de registradores temporários
+#define nregparam 10 // numero de registradores de parametros
+#define iniDataMem 361; // endereço da primeira posição da memória de dados
+
 /* Yacc/Bison gera os próprios valores inteiros para os tokens */
 typedef int TokenType;
+
+typedef int FlagType;
 
 extern FILE* source; /* arquivo texto do código fonte */
 extern FILE* listing; /* listing output text file */
@@ -71,7 +78,7 @@ extern int lineno; /* source line number for listing */
 
 typedef enum {StmtK,ExpK} NodeKind;
 typedef enum {IfK,WhileK,AssignK,ReturnINT,ReturnVOID} StmtKind;
-typedef enum {OpK,ConstK,IdK,VarDeclK,VetDeclK,FunDeclK,AtivK,TypeK,VetorK,ParamK} ExpKind;
+typedef enum {OpK,ConstK,IdK,VarDeclK,VetDeclK,FunDeclK,AtivK,TypeK,VetorK,VarParamK,VetParamK} ExpKind;
 
 /* ExpType é usado para checagem de tipo */
 typedef enum {Void,Integer,Boolean} ExpType;

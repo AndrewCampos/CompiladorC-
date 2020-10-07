@@ -65,9 +65,9 @@ void st_insert( char * name, int lineno, int op, char* escopo, dataTypes RetType
   }
 
   //Para inserir: não achou outra declaração, se achou verificar se o escopo é DIF e não é uma função
-  if ( l == NULL || (op != 0 && l->escopo != escopo && l->IType != FUN && l->IType != CALL)) { /* variável não está na tabela ainda */
+  if ( l == NULL || (op != 0 && l->escopo != escopo && l->IType != FUN && l->IType != CALL) || IType == RETT) { /* variável não está na tabela ainda */
     if(l != NULL && strcmp(l->name,name) == 0 && strcmp(l->escopo,"global") == 0){
-      fprintf(listing,N_VERM"[%d] Erro semântico!"RESET" Variavel '%s' já declarada no escopo global.\n",lineno,name);
+      fprintf(listing,N_VERM"[%d] Erro semântico!"RESET" Variável '%s' já declarada no escopo global.\n",lineno,name);
       Error = TRUE;
     }else{
       l = (BucketList) malloc(sizeof(struct BucketListRec));
@@ -87,11 +87,11 @@ void st_insert( char * name, int lineno, int op, char* escopo, dataTypes RetType
     }
   }
   else if( (l->IType == FUN  && IType == VAR) || (l->IType == CALL  && IType == VAR)){
-    fprintf(listing,N_VERM"[%d] Erro semântico!"RESET" Nome da variavel '%s' já utilizada como nome de função.\n",lineno,name);
+    fprintf(listing,N_VERM"[%d] Erro semântico!"RESET" Nome da variável '%s' já utilizada como nome de função.\n",lineno,name);
     Error = TRUE;
   }
   else if( l->escopo == escopo && op != 0 ){
-    fprintf(listing,N_VERM"[%d] Erro semântico!"RESET" Variavel '%s' já declarada neste escopo.\n",lineno,name);
+    fprintf(listing,N_VERM"[%d] Erro semântico!"RESET" Variável '%s' já declarada neste escopo.\n",lineno,name);
     Error = TRUE;
     
   }else if(l->escopo != escopo){
@@ -107,7 +107,7 @@ void st_insert( char * name, int lineno, int op, char* escopo, dataTypes RetType
       l = l->next;
     }
     if(l == NULL){
-      fprintf(listing,N_VERM"[%d] Erro semântico!"RESET" Variavel '%s' não declarada neste escopo.\n",lineno,name);
+      fprintf(listing,N_VERM"[%d] Erro semântico!"RESET" Variável '%s' não declarada neste escopo.\n",lineno,name);
       Error = TRUE;
     }
   }
@@ -173,6 +173,7 @@ int checkReturn(char* escopo){
 dataTypes getFunType(char* nome){
   int h = hash(nome);
   BucketList l =  hashTable[h];
+
   while ((l != NULL)){
     if (strcmp(nome,l->name) == 0){
       if (l->IType == FUN) break;

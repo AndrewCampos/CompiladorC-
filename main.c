@@ -16,8 +16,8 @@
 #include "analyze.h"
 #if !NO_CODE
 #include "cgen.h"
-//#include "assembly.h"
-//#include "binary.h"
+#include "assembly.h"
+#include "binary.h"
 #endif
 #endif
 #endif
@@ -29,8 +29,8 @@ FILE * listing;
 FILE * code;
 
 int TraceScan = FALSE; // Imprimir tokens
-int TraceParse = FALSE; // Imprimir árvore sintática
-int TraceAnalyze = FALSE; // Imprimir tabela de simbolos
+int TraceParse = TRUE; // Imprimir árvore sintática
+int TraceAnalyze = TRUE; // Imprimir tabela de simbolos
 int TraceCode = FALSE; // Imprimir nós da geração de código
 int CreateFiles = FALSE; // Criar arquivos de compilação
 int Error = FALSE; // Flag que marca a existência de erros
@@ -54,7 +54,7 @@ int main( int argc, char * argv[] ) {
   }
   listing = stdout; /* send listing to screen */
   fprintf(listing,N_BRC"\nCOMPILAÇÃO DO ARQUIVO C-\n"RESET);
-  fprintf(listing,"Fonte: "VERD"./%s\n\n"RESET,path);
+  fprintf(listing,"Fonte: "VERD"./%s\n"RESET,path);
   nomeiaArquivos(pgm);
 
 #if NO_PARSE
@@ -86,8 +86,10 @@ int main( int argc, char * argv[] ) {
       exit(1);
     }
     if(TraceCode) fprintf(listing,AZ"Criando código intermediário...\n"RESET);
-    codeGen(syntaxTree);                             //GERADOR DE COD. INTERMED.
+    codeGen(syntaxTree);  //GERADOR DE COD. INTERMED.
     fclose(code);
+    generateAssembly(getIntermediate());  // GERADOR DE COD. ASSEMBLY
+    generateBinary();  // GERADOR DE COD. BINÁRIO
     if(CreateFiles) makeFiles();
   } 
 

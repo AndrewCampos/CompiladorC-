@@ -5,7 +5,7 @@
 #define INDIF -1
 
 /* counter for variable memory locations */
-static int location = 0;
+static int location = iniDataMem;
 char* escopo = "global";
 int check_return = FALSE;
 
@@ -14,7 +14,7 @@ void UpdateScope(TreeNode * t){
     escopo = t->attr.name;
     if(getFunType(escopo) == INTTYPE && check_return == TRUE){
       if(checkReturn(escopo) == -1){
-        printf(N_VERM"[%d] Erro Semantico!"RESET" Retorno da funcao '%s' inexistente.\n",t->lineno,escopo);
+        printf(N_VERM"[%d] Erro Semântico!"RESET" Retorno da função '%s' inexistente.\n",t->lineno,escopo);
         Error = TRUE;
       }
     }
@@ -54,16 +54,18 @@ static void insertNode( TreeNode * t) {
   switch (t->nodekind){
     case StmtK:
       switch (t->kind.stmt){
+
       case ReturnVOID:
         if(getFunType(escopo) == INTTYPE){
-          printf(N_VERM"[%d] Erro Semantico!"RESET" Retorno da função '%s' incompatível.\n",t->lineno,escopo);
+          printf(N_VERM"[%d] Erro Semântico!"RESET" Retorno da função '%s' incompatível.\n",t->lineno,escopo);
           Error = TRUE;
         }
         st_insert("return",t->lineno,0,escopo,INTTYPE, NULLL, RETT, t->vet); 
         break;
+
       case ReturnINT:
         if(getFunType(escopo) == VOIDTYPE){
-          printf(N_VERM"[%d] Erro Semantico!"RESET" Retorno da função '%s' incompatível.",t->lineno,escopo);
+          printf(N_VERM"[%d] Erro Semântico!"RESET" Retorno da função '%s' incompatível.",t->lineno,escopo);
           Error = TRUE;
         }
         st_insert("return",t->lineno,0,escopo,INTTYPE, NULLL, RETT, t->vet); 
@@ -72,14 +74,22 @@ static void insertNode( TreeNode * t) {
         break;
       }
       break; 
+
     case ExpK:
       switch(t->kind.exp){
+
         case VarDeclK:
           st_insert(t->attr.name,t->lineno,location++,escopo,INTTYPE, TIPO, VAR, t->vet); 
           if (st_lookup(t->attr.name, escopo) == -1)
           /* não encontrado na tabela, inserir*/
             st_insert(t->attr.name,t->lineno,location++, escopo,INTTYPE, TIPO, VAR , t->vet);
           break;
+
+        case VetorK:
+          st_insert(t->attr.name,t->lineno,location++, escopo,INTTYPE, TIPO, VET, t->vet);
+          location += t->child[1]->attr.val -1;
+          break;
+
         case FunDeclK:
           if(strcmp(t->child[1]->attr.name,"VOID") == 0) TIPO = VOIDTYPE;
           else TIPO = INTTYPE;
@@ -92,17 +102,19 @@ static void insertNode( TreeNode * t) {
             Error = TRUE;
           }
           break;
-        case ParamK:
+
+        case VarParamK:
             st_insert(t->attr.name,t->lineno,location++,escopo,INTTYPE, TIPO, VAR, t->vet);
           break;
-        case VetorK:
-          st_insert(t->attr.name,t->lineno,location++, escopo,INTTYPE, TIPO, VAR, t->vet);
-          location += t->child[1]->attr.val -1;
+
+        case VetParamK:
+            st_insert(t->attr.name,t->lineno,INDIF,escopo,INTTYPE, TIPO, VET, t->vet);
           break;
+
         case IdK:
           if(t->add != 1){
             if (st_lookup(t->attr.name, escopo) == -1){
-              fprintf(listing,N_VERM"[%d] Erro Semântico!"RESET" A variavel '%s' não foi declarada.\n",t->lineno,t->attr.name);
+              fprintf(listing,N_VERM"[%d] Erro Semântico!"RESET" A variável '%s' não foi declarada.\n",t->lineno,t->attr.name);
               Error = TRUE;
             }
             else {
@@ -110,6 +122,7 @@ static void insertNode( TreeNode * t) {
             }
           }
           break;
+
         case AtivK:
           if (st_lookup(t->attr.name, escopo) == -1 && strcmp(t->attr.name, "input")!=0 && strcmp(t->attr.name, "output")!=0){
             fprintf(listing,N_VERM"[%d] Erro Semântico!"RESET" A função '%s' não foi declarada.\n",t->lineno,t->attr.name);
@@ -137,7 +150,7 @@ void buildSymtab(TreeNode * syntaxTree){
   if (TraceAnalyze) fprintf(listing,AZ"Checando Tipos...\n"RESET);
   check_return = TRUE;
   typeCheck(syntaxTree);
-  if(/*!Error &&*/ TraceAnalyze){
+  if(TraceAnalyze && Error != TRUE){
     printf(N_AZ"                               Tabela de Simbolos:\n"RESET);
     printSymTab(listing);
     }

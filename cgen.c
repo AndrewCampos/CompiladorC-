@@ -9,12 +9,9 @@
 
 #include "globals.h"
 #include "symtab.h"
-#include "code.h"
 #include "cgen.h"
 #include "parse.h"
 #include "analyze.h"
-//#include "assembly.h"
-#define nregtemp 15   // quantidade de registradores temporarios
 
 /* tmpOffset is the memory offset for temps
    It is decremented each time a temp is
@@ -39,10 +36,12 @@ Address var;
 Address offset;
 Address empty;
 
+FlagType Imediato = FALSE;
+
 char var_escopo[30] = "global";
 
 const char *OpKindNames[] = {"add", "sub", "mult", "div", "blt", "lequal", "bgt", "grequal", "beq", "bne", "and", "or", "atrib",
-                            "alloc", "addi", "subi", "load", "store","vec", "goto", "iff", "ret", "fun", "end",
+                            "alloc", "addi", "subi", "load", "store", "vec", "goto", "iff", "ret", "fun", "end",
                             "param", "call", "arg", "label", "hlt"};
 
 void quad_insert(OpKind op, Address addr1, Address addr2, Address addr3){
@@ -221,8 +220,8 @@ static void genStmt(TreeNode *tree){
     // exp
     cGen(p2);
     addr2 = aux;
-    quad_insert(opASSIGN, addr1, addr2, empty);
-    quad_insert(opSTORE, empty, addr1, aux1);
+    quad_insert(opATRIB, addr1, addr2, empty);
+    quad_insert(opSTORE, addr1, aux1, aux2);
     if (TraceCode)
       emitComment("<- atrib");
     break;
@@ -269,6 +268,7 @@ static void genExp(TreeNode *tree){
     temp = newTemp();
     addr1 = addr_createIntConst(tree->attr.val);
     aux = addr_createString(temp, var_escopo);
+    Imediato = TRUE; // teste ................
     quad_insert(opADDI, aux, addr_createString("$zero", var_escopo), addr1);
     if (TraceCode)
       emitComment("<- Const");
@@ -280,19 +280,29 @@ static void genExp(TreeNode *tree){
     aux = addr_createString(tree->attr.name, var_escopo);
     p1 = tree->child[0];
     if (p1 != NULL){ // caso seja um vetor
+      
       temp = newTemp();
       addr1 =addr_createString(temp, var_escopo);
       addr2 = aux;
-      cGen(p1);
-      quad_insert(opVEC, addr1, addr2, aux);
-      var = addr2;
-      offset = aux;
-      aux = addr1;
+      if(p1->kind.exp == ConstK){ // caso indice seja um numero
+        addr3 = addr_createIntConst(p1->attr.val);
+        quad_insert(opLOAD, addr1, addr2, addr3);
+        var = addr2;
+        offset = addr3;
+        aux = addr1;
+      }
+      else{ // caso indice seja uma variável ou expressão
+        cGen(p1);
+        quad_insert(opVEC, addr1, addr2, aux);
+        var = addr2;
+        offset = aux;
+        aux = addr1;
+      }
     }
     else{ // caso não seja vetor
       temp = newTemp();
       addr1 = addr_createString(temp, var_escopo);
-      quad_insert(opLOAD, empty, addr1, aux);
+      quad_insert(opLOAD, addr1, aux, empty);
       var = aux;
       offset = empty;
       aux = addr1;
@@ -327,30 +337,51 @@ static void genExp(TreeNode *tree){
   case AtivK:
     if (TraceCode)
       emitComment("-> Call");
-    //Address a1 = addr_createIntConst(tree->params);
     // é um parametro
     nparams = tree->params;
     p1 = tree->child[0];
 
     while (p1 != NULL){
       cGen(p1);
-      quad_insert(opPARAM, aux, empty, empty);
-      nparams--;
+      if(strcmp(tree->attr.name,"output") == 0){
+        quad_insert(opADDI, addr_createString("$io", var_escopo), aux, addr_createIntConst(0));
+      }else{
+        quad_insert(opPARAM, aux, empty, empty);
+        nparams--;
+      }
       p1 = p1->sibling;
     }
 
     nparams = -1;
-    temp = newTemp();
-    aux = addr_createString(temp, var_escopo);
-    quad_insert(opCALL, aux, addr_createString(tree->attr.name, var_escopo), addr_createIntConst(tree->params));
+    if(getFunType(tree->attr.name) == INTTYPE){
+      aux = addr_createString("$ret", var_escopo);
+      quad_insert(opCALL, aux, addr_createString(tree->attr.name, var_escopo), addr_createIntConst(tree->params));
+
+      }else {
+        if(strcmp(tree->attr.name,"input")==0)
+          aux = addr_createString("$io",var_escopo);
+        quad_insert(opCALL, empty, addr_createString(tree->attr.name, var_escopo), addr_createIntConst(tree->params));
+      }
 
     if (TraceCode)
       emitComment("<- Call");
     break;
 
-  case ParamK:
+  case VarParamK:
     if (TraceCode)
       emitComment("-> Param");
+    /*memLoc = getMemLoc(tree->attr.name,var_escopo);
+    addr1 = addr_createIntConst(memLoc);*/
+    quad_insert(opARG, addr_createString(tree->attr.name, var_escopo), empty, addr_createString(var_escopo,var_escopo));
+    if (TraceCode)
+      emitComment("<- Param");
+    break;
+
+  case VetParamK:
+    if (TraceCode)
+      emitComment("-> Param");
+    /*memLoc = getMemLoc(tree->attr.name,var_escopo);
+    addr1 = addr_createIntConst(memLoc);*/
     quad_insert(opARG, addr_createString(tree->attr.name, var_escopo), empty, addr_createString(var_escopo,var_escopo));
     if (TraceCode)
       emitComment("<- Param");
@@ -361,15 +392,31 @@ static void genExp(TreeNode *tree){
     if (TraceCode)
       emitComment("-> Var ");
     
-    if (memLoc > 0){
+    if (memLoc >= 0){
       quad_insert(opALLOC, addr_createString(tree->attr.name, var_escopo), addr_createIntConst(memLoc), addr_createString(var_escopo,var_escopo));
     }else{
-      printf(N_VERM "Erro ao alocar a variável '%s'!\n" RESET,tree->attr.name);
+      printf(N_VERM "Erro ao alocar a variável '%s'! - memLoc: %d\n" RESET,tree->attr.name,memLoc);
       Error = TRUE;
       return;
     }
     if (TraceCode)
       emitComment("<- Var");
+    break;
+
+  case VetorK:
+    memLoc = getMemLoc(tree->attr.name,var_escopo);
+    if (TraceCode)
+      emitComment("-> Vet ");
+    
+    if (memLoc >= 0){
+      quad_insert(opALLOC, addr_createString(tree->attr.name, var_escopo), addr_createIntConst(memLoc), addr_createString(var_escopo,var_escopo));
+    }else{
+      printf(N_VERM "Erro ao alocar o vetor '%s'! - memLoc: %d\n" RESET,tree->attr.name,memLoc);
+      Error = TRUE;
+      return;
+    }
+    if (TraceCode)
+      emitComment("<- Vet");
     break;
 
   case OpK:
@@ -400,7 +447,7 @@ static void genExp(TreeNode *tree){
     case MENO:
       quad_insert(opSGE, aux, addr1, addr2);
       addr1 = addr_createString(newTemp(),var_escopo);
-      addr2 = addr_createIntConst(0);
+      addr2 = addr_createIntConst(1);
       quad_insert(opADDI, addr1, addr_createString("$zero", var_escopo), addr2);
       quad_insert(opBEQ,aux,addr1,empty);
       break;
@@ -410,7 +457,7 @@ static void genExp(TreeNode *tree){
     case MAIO:
       quad_insert(opSLE, aux, addr1, addr2);
       addr1 = addr_createString(newTemp(),var_escopo);
-      addr2 = addr_createIntConst(0);
+      addr2 = addr_createIntConst(1);
       quad_insert(opADDI, addr1, addr_createString("$zero", var_escopo), addr2);
       quad_insert(opBEQ,aux,addr1,empty);
       break;

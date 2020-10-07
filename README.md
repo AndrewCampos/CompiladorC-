@@ -16,18 +16,22 @@ $ ./clean.sh
 
 ALTERAÇÕES QUE PRECISAM SER FEITAS:
 
-Arrumar a flag Error
+1. Gerar código assembly
 
-Conferir operações
+1. Pensar na alocação de variáveis (principalmente vetor) quando são parâmetros
 
-Adaptar linguagem para processador
+1. Pensar na manipulação de vetores com variavel como indice
 
-Escolher quadras do CI
+1. Gerar código binário
 
-Colcoar flag para loads desnecessarios
+1. Rever necessidade do registrador $io
 
-Gerar código intermediário
+1. Fazer uso das instruções com imediato
 
-Gerar código assembly
+1. Colcoar flag para loads desnecessarios
 
-Gerar código binário
+OBSERVAÇÕES:
+
+- int i[10]; return i; funciona e não deveria
+
+- erro de numero de parametros que nao batem nao é tratado

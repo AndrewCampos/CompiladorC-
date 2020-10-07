@@ -1,19 +1,10 @@
-/****************************************************/
-/* File: cgen.h                                     */
-/* The code generator interface                     */
-/* for the C- compiler                              */
-/* Adapted from:                                    */
-/* Compiler Construction: Principles and Practice   */
-/* Kenneth C. Louden                                */
-/****************************************************/
-
 #ifndef _CGEN_H_
 #define _CGEN_H_
 
 #define nlabel_size 3
 #define ntemp_size 3
 
-typedef enum {  opADD, opSUB, opMULT, opDIV, opBLT, opSLE, opBGT, opSGE, opBEQ, opBNE, opAND, opOR, opASSIGN,
+typedef enum {  opADD, opSUB, opMULT, opDIV, opBLT, opSLE, opBGT, opSGE, opBEQ, opBNE, opAND, opOR, opATRIB,
                 opALLOC, opADDI, opSUBI, opLOAD, opSTORE, opVEC, opGOTO, opIFF, opRET, opFUN, opEND, opPARAM,
                 opCALL, opARG, opLABEL, opHLT } OpKind;
 
@@ -41,12 +32,6 @@ typedef struct QuadListRec {
   struct QuadListRec * next;
 } * QuadList;
 
-/* Procedure codeGen generates code to a code
- * file by traversal of the syntax tree. The
- * second parameter (codefile) is the file name
- * of the code file, and is used to print the
- * file name as a comment in the code file
- */
 void codeGen(TreeNode * syntaxTree);
 
 QuadList getIntermediate();

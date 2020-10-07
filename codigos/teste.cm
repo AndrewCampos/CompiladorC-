@@ -1,11 +1,8 @@
-int func( int pa, int pb[] ){
-    int j;
-    j = pa + pb[0];
-    return j;
+void teste(int v[], int a){
+
 }
 
-int main(void){
-    int a[10];
-    int b;
-    return func(b,a[1]);
+void main(void){
+    int i[10];
+    teste(i);
 }
