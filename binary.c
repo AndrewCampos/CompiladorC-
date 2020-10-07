@@ -94,7 +94,7 @@ void generateBinary () {
     char *bin;
 
     if(PrintCode)
-        printf(N_AZ "\nC- Binary Code: %s\n" RESET,binCode);
+        printf(N_AZ "\nCódigo Binário:\n" RESET);
     while (a != NULL && listing != NULL) {
         assembly2binary(a);
         a = a->next;

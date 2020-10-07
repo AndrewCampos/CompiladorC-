@@ -349,7 +349,7 @@ static void genExp(TreeNode *tree){
     while (p1 != NULL){
       cGen(p1);
       if(strcmp(tree->attr.name,"output") == 0){
-        quad_insert(opADDI, addr_createString("$io", var_escopo), aux, addr_createIntConst(0));
+        quad_insert(opADDI, addr_createString("$p1", var_escopo), aux, addr_createIntConst(0));
       }else{
         quad_insert(opPARAM, aux, empty, empty);
         nparams--;
@@ -364,7 +364,7 @@ static void genExp(TreeNode *tree){
 
       }else {
         if(strcmp(tree->attr.name,"input")==0)
-          aux = addr_createString("$io",var_escopo);
+          aux = addr_createString("$ret",var_escopo);
         quad_insert(opCALL, empty, addr_createString(tree->attr.name, var_escopo), addr_createIntConst(tree->params));
       }
 

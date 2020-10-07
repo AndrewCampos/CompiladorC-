@@ -1,7 +1,3 @@
-void teste(int v[], int a){
-
-}
-
 void main(void){
     int i[10];
     teste(i);

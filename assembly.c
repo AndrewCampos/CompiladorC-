@@ -333,10 +333,10 @@ void generateInstruction (QuadList l) {
             
             case opCALL:
                 if (strcmp(a2.contents.var.name, "input") == 0) {
-                    instructionSYS(in, $io);
+                    instructionSYS(in, $ret);
                 }
                 else if (strcmp(a2.contents.var.name, "output") == 0) {
-                    instructionSYS(out,$io);
+                    instructionSYS(out,$p1);
                 }
                 else {
                     /*if(a1.kind != Empty){
