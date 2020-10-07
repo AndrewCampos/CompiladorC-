@@ -5,7 +5,7 @@
 #define INDIF -1
 
 /* counter for variable memory locations */
-static int location = iniDataMem;
+static int location = 0;
 char* escopo = "global";
 int check_return = FALSE;
 
@@ -91,6 +91,7 @@ static void insertNode( TreeNode * t) {
           break;
 
         case FunDeclK:
+          location = 1;
           if(strcmp(t->child[1]->attr.name,"VOID") == 0) TIPO = VOIDTYPE;
           else TIPO = INTTYPE;
           if (st_lookup(t->attr.name,escopo) == -1){
@@ -108,7 +109,7 @@ static void insertNode( TreeNode * t) {
           break;
 
         case VetParamK:
-            st_insert(t->attr.name,t->lineno,INDIF,escopo,INTTYPE, TIPO, VET, t->vet);
+            st_insert(t->attr.name,t->lineno,location++,escopo,INTTYPE, TIPO, VET, t->vet);
           break;
 
         case IdK:

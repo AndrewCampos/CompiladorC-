@@ -44,6 +44,11 @@ const char *OpKindNames[] = {"add", "sub", "mult", "div", "blt", "lequal", "bgt"
                             "alloc", "addi", "subi", "load", "store", "vec", "goto", "iff", "ret", "fun", "end",
                             "param", "call", "arg", "label", "hlt"};
 
+void emitComment( char * c ) { 
+  if (TraceCode) fprintf(code,"// %s\n",c);
+  printf("%s\n", c);
+}
+
 void quad_insert(OpKind op, Address addr1, Address addr2, Address addr3){
   Quad quad;
   quad.op = op;
