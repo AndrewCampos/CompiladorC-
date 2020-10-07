@@ -2,8 +2,9 @@
 #include "symtab.h"
 #include "cgen.h"
 #include "assembly.h"
+#include <string.h>
 
-const char *Instr[] = { "add", "sub", "mult", "div", "and", "or", "nand", "nor", "sle", "slt", "sge", "addi", "subi", "divi", "multi", "andi", "ori",
+const char *Prefixos[] = { "add", "sub", "mult", "div", "and", "or", "nand", "nor", "sle", "slt", "sge", "addi", "subi", "divi", "multi", "andi", "ori",
                         "nori", "slei", "slti", "beq", "bne", "blt", "bgt", "sti", "ldi", "str", "ldr", "hlt", "in", "out", "jmp", "jal", "jst" };
 
 const char *opcodeBins[] =   {"000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", 
@@ -17,23 +18,85 @@ const char *regBins[] = {  "00000", "00001", "00010", "00011", "00100", "00101",
                            "01111", "10000", "10001", "10010", "10011", "10100", "10101", "10110", "10111", "11000", "11001", "11010", "11011", "11100", "11101",
                            "11110", "11111" };
 
-void assembly2binary(Instruction inst){
+char* getImediate (int im, int size) {
+    int i = 0;
+    char * bin = (char *) malloc(size + 2);
+    size --;
+    for (unsigned bit = 1u << size; bit != 0; bit >>= 1) {
+        bin[i++] = (im & bit) ? '1' : '0';
+    }
+    bin[i] = '\0';
+    return bin;
+}
 
+void assembly2binary(AssemblyCode codeLine){
+    Instruction inst;
+    if(codeLine->kind == instr){
+        inst = codeLine->line.instruction;
+        switch(inst.format){
+        case formatR:
+            fprintf(listing,"ram[%d] = %s %s %s %s 00000 %s",codeLine->lineno,
+                                                             opcodeBins[inst.opcode],
+                                                             regBins[inst.reg2],
+                                                             regBins[inst.reg3],
+                                                             regBins[inst.reg1],
+                                                             functBins[inst.opcode]);
+            fprintf(listing,"   // %s\n",Prefixos[inst.opcode]);
+            break;
+        case formatJ:
+            if(inst.opcode == jst){
+                fprintf(listing,"ram[%d] = %s 00000000000000000000000000",codeLine->lineno,
+                                                           opcodeBins[inst.opcode]);
+                fprintf(listing,"   // %s\n",Prefixos[inst.opcode]);
+            }else{
+                fprintf(listing,"ram[%d] = %s %s",codeLine->lineno,
+                                                           opcodeBins[inst.opcode],
+                                                           getImediate(inst.imed,26));
+                fprintf(listing,"   // %s\n",Prefixos[inst.opcode]);
+            }
+            break;
+        case formatI:
+            if(inst.opcode == sti || inst.opcode == ldi){
+                fprintf(listing,"ram[%d] = %s 00000 %s %s",codeLine->lineno,
+                                                           opcodeBins[inst.opcode],
+                                                           regBins[inst.reg1],
+                                                           getImediate(inst.imed,16));
+                fprintf(listing,"   // %s\n",Prefixos[inst.opcode]);
+            }else{
+                fprintf(listing,"ram[%d] = %s %s %s %s",codeLine->lineno,
+                                                           opcodeBins[inst.opcode],
+                                                           regBins[inst.reg2],
+                                                           regBins[inst.reg1],
+                                                           getImediate(inst.imed,16));
+                fprintf(listing,"   // %s\n",Prefixos[inst.opcode]);
+            }
+            break;
+        case formatSYS:
+            if(inst.opcode == hlt){
+                fprintf(listing,"ram[%d] = %s 00000000000000000000000000",codeLine->lineno,
+                                                           opcodeBins[inst.opcode]);
+                fprintf(listing,"   // %s\n",Prefixos[inst.opcode]);
+            }else{
+                fprintf(listing,"ram[%d] = %s 00000 %s 0000000000000000",codeLine->lineno,
+                                                           opcodeBins[inst.opcode],
+                                                           regBins[inst.reg2]);
+                fprintf(listing,"   // %s\n",Prefixos[inst.opcode]);
+            }
+            break;
+        }
+    }else{
+
+    }
 }
 
 void generateBinary () {
     AssemblyCode a = getAssembly();
-    printf(AZ "\nC- Binary Code\n" RESET);
+    char *bin;
 
-    while (a != NULL) {
-        if (a->kind == instr) {
-        fprintf(listing,"mem[%d] = 32'b", a->lineno);
-            assembly2binary(a->line.instruction);
-            fprintf(listing,"// %s\n", Instr[a->line.instruction.opcode]);
-        }
-        else {
-            fprintf(listing,"//%s\n", a->line.label);
-        }
+    if(PrintCode)
+        printf(N_AZ "\nC- Binary Code: %s\n" RESET,binCode);
+    while (a != NULL && listing != NULL) {
+        assembly2binary(a);
         a = a->next;
     }
 }

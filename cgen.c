@@ -45,7 +45,7 @@ const char *OpKindNames[] = {"add", "sub", "mult", "div", "blt", "lequal", "bgt"
                             "param", "call", "arg", "label", "hlt"};
 
 void emitComment( char * c ) { 
-  if (TraceCode) fprintf(code,"// %s\n",c);
+  if (TraceCode) fprintf(listing,"// %s\n",c);
   printf("%s\n", c);
 }
 

@@ -26,14 +26,14 @@ extern int check_return;
 int lineno = 1;
 FILE * source;
 FILE * listing;
-FILE * code;
 
-int TraceScan = FALSE; // Imprimir tokens
-int TraceParse = TRUE; // Imprimir árvore sintática
-int TraceAnalyze = TRUE; // Imprimir tabela de simbolos
-int TraceCode = FALSE; // Imprimir nós da geração de código
-int CreateFiles = FALSE; // Criar arquivos de compilação
-int Error = FALSE; // Flag que marca a existência de erros
+FlagType TraceScan = FALSE; // Imprimir tokens
+FlagType TraceParse = TRUE; // Imprimir árvore sintática
+FlagType TraceAnalyze = FALSE; // Imprimir tabela de simbolos
+FlagType TraceCode = TRUE; // Imprimir nós da geração de código
+FlagType PrintCode = TRUE; // Imprimir os códigos gerados
+FlagType CreateFiles = FALSE; // Criar arquivos de compilação
+FlagType Error = FALSE; // Flag que marca a existência de erros
 
 int main( int argc, char * argv[] ) {
   char pgm[120]; /* nome do arquivo do código fonte */
@@ -61,7 +61,10 @@ int main( int argc, char * argv[] ) {
   while (getToken()!=ENDFILE);
 #else
   syntaxTree = parse();
-  if(Error == TRUE) exit(-1);
+  if(Error == TRUE){
+    printf(N_VERM "Impossível concluir a compilação!\n\n");
+    exit(-1);
+    }
   if (TraceParse) {
     fprintf(listing,N_AZ"Árvore Sintática:\n"RESET);
     printTree(syntaxTree);
@@ -71,27 +74,20 @@ int main( int argc, char * argv[] ) {
   if (TraceAnalyze) fprintf(listing,AZ"Construindo Tabela de Simbolos...\n"RESET);
   buildSymtab(syntaxTree);
   if (TraceAnalyze) fprintf(listing,N_VERD"\nAnálise Concluida!\n"RESET); 
-
+  if(Error){
+    printf(N_VERM "Impossível concluir a compilação!\n\n");
+    exit(-1);
+  }
 #if !NO_CODE
-  if (!Error){
-  char * codefile;
-    int fnlen = strcspn(pgm,".");
-    codefile = (char *) calloc(12+fnlen+5, sizeof(char));
-    strcpy(codefile,"binarios/");
-    strncat(codefile,pgm,fnlen);
-    strcat(codefile,".inst");
-    code = fopen(codefile,"w");
-    if (code == NULL) {
-      printf(N_VERM"Não foi possível abrir o arquivo '%s'!\n"RESET,codefile);
-      exit(1);
-    }
-    if(TraceCode) fprintf(listing,AZ"Criando código intermediário...\n"RESET);
-    codeGen(syntaxTree);  //GERADOR DE COD. INTERMED.
-    fclose(code);
-    generateAssembly(getIntermediate());  // GERADOR DE COD. ASSEMBLY
-    generateBinary();  // GERADOR DE COD. BINÁRIO
-    if(CreateFiles) makeFiles();
-  } 
+  if(TraceCode) fprintf(listing,AZ"Criando código intermediário...\n"RESET);
+  codeGen(syntaxTree);  //GERADOR DE COD. INTERMED.
+  generateAssembly(getIntermediate());  // GERADOR DE COD. ASSEMBLY
+  if(!PrintCode) listing = NULL;
+  generateBinary();  // GERADOR DE COD. BINÁRIO
+  listing = stdout;
+  fprintf(listing, N_VERD "Compilação concluida com sucesso!\n\n" RESET);
+  if(CreateFiles) makeFiles();
+
 
 #endif
 #endif

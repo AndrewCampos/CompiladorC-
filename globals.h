@@ -63,7 +63,6 @@
 
 /* Yacc/Bison gera os próprios valores inteiros para os tokens */
 typedef int TokenType;
-
 typedef int FlagType;
 
 extern FILE* source; /* arquivo texto do código fonte */
@@ -119,26 +118,10 @@ char *interCode; // Caminho para o codigo intermediário
 char *assCode; // Caminho para o codigo assembly
 char *binCode; // caminho para o codigo binário
 
-/**************************************************/
-/***********   Flags for tracing       ************/
-/**************************************************/
-
-/* TraceScan = TRUE faz com que as informações do token sejam impressas no arquivo de listagem,
-pois cada token é reconhecido pelo scanner */
-extern int TraceScan;
-
-/* TraceParse = TRUE faz com que a árvore sintática seja impressa no arquivo de listagem na
-forma linearizada (usando recuos para filhos)
- */
-extern int TraceParse;
-
-/* TraceAnalyze = TRUE faz com que inserções e pesquisas da tabela de símbolos sejam relatadas
-ao arquivo de listagem */
-extern int TraceAnalyze;
-
-/* TraceCode = TRUE causes comments to be written to the TM code file as code is generated */
-extern int TraceCode;
-
-/* Error = TRUE evita passagens adicionais se ocorrer um erro */
-extern int Error;
+extern FlagType TraceScan;
+extern FlagType TraceParse;
+extern FlagType TraceAnalyze;
+extern FlagType TraceCode;
+extern FlagType PrintCode;
+extern FlagType Error;
 #endif
