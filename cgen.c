@@ -287,7 +287,7 @@ static void genExp(TreeNode *tree){
     if (p1 != NULL){ // caso seja um vetor
       
       temp = newTemp();
-      addr1 =addr_createString(temp, var_escopo);
+      addr1 = addr_createString(temp, var_escopo);
       addr2 = aux;
       if(p1->kind.exp == ConstK){ // caso indice seja um numero
         addr3 = addr_createIntConst(p1->attr.val);
@@ -347,13 +347,25 @@ static void genExp(TreeNode *tree){
     p1 = tree->child[0];
 
     while (p1 != NULL){
-      cGen(p1);
       if(strcmp(tree->attr.name,"output") == 0){
         quad_insert(opADDI, addr_createString("$p1", var_escopo), aux, addr_createIntConst(0));
-      }else{
-        quad_insert(opPARAM, aux, empty, empty);
-        nparams--;
+        return;
       }
+
+      if(p1->kind.exp == IdK){
+        if(getVarType(p1->attr.name,var_escopo) == VET){
+          printf("......\n");
+          temp = newTemp();
+          aux = addr_createString(temp,var_escopo);
+          quad_insert(opADDI,aux,addr_createString("$zero",var_escopo),addr_createIntConst(getMemLoc(p1->attr.name,var_escopo)));
+        
+        }else cGen(p1);
+      }else{
+        cGen(p1);
+      }
+      //cGen(p1);
+      quad_insert(opPARAM, aux, empty, empty);
+      nparams--;
       p1 = p1->sibling;
     }
 

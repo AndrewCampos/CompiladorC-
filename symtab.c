@@ -197,6 +197,20 @@ int getMemLoc(char* nome, char* escopo){
   else return l->memloc;
 }
 
+IDTypes getVarType(char* nome, char* escopo){
+  int h = hash(nome);
+  BucketList l =  hashTable[h];
+  if(nome == NULL) return -1;
+  while ((l != NULL)){
+    if (strcmp(nome,l->name) == 0){
+      if(strcmp(escopo,l->escopo) == 0) break;
+    }
+    l = l->next;
+  }
+  if (l == NULL) return -1;
+  else return l->IType;
+}
+
 void printSymTab(FILE * listing) {
   int i;
   fprintf(listing,"---------------------------------------------------------------------------------\n");

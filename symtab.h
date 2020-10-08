@@ -46,6 +46,9 @@ int checkReturn(char* escopo);
 /* Função para conferir a posição de memoria alocada para uma variável */
 int getMemLoc(char* nome, char* escopo);
 
+/* Função para conferir o tipo da variável (Var ou Vet) */
+IDTypes getVarType(char* nome, char* escopo);
+
 /* O procedimento printSymTab imprime uma lista formatada do conteúdo da tabela de símbolos no
  arquivo de listagem */
 void printSymTab(FILE * listing);

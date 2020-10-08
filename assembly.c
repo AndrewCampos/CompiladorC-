@@ -7,7 +7,7 @@ const char *InstrNames[] = { "add", "sub", "mult", "div", "and", "or", "nand", "
                              "nori", "slei", "slti", "beq", "bne", "blt", "bgt", "sti", "ldi", "str", "ldr", "hlt", "in", "out", "jmp", "jal", "jst" };
 
 const char * regNames[] = { "$zero", "$r1", "$r2", "$r3", "$r4", "$r5", "$r6", "$r7", "$r8", "$r9", "$r10", "$r11", "$r12", "$r13", "$r14", "$r15",
-                            "$r16", "$r17", "$r18", "$r19", "$p1", "$p2", "$p3", "$p4", "$p5", "$p6", "$p7", "$p8", "$p9", "$p10", "$ret", "$io","" };
+                            "$r16", "$r17", "$r18", "$r19", "$p1", "$p2", "$p3", "$p4", "$p5", "$p6", "$p7", "$p8", "$p9", "$p10", "$ret", "$lp","" };
 
 AssemblyCode codehead = NULL;
 FunList funlisthead = NULL;
@@ -68,6 +68,18 @@ void insertVar (char * scope, char * id, int size, VarKind kind) {
     }
     
     f->size = f->size + size;
+}
+
+VarKind checkType (QuadList l) {
+   // printf("entrou no checktype \n");
+    QuadList aux = l;
+    Quad q = aux->quad;
+    aux = aux->next;
+    while (aux != NULL && aux->quad.op != opEND) {
+        if (aux->quad.op == opVEC && strcmp(aux->quad.addr2.contents.var.name, q.addr1.contents.var.name) == 0) return address;
+        aux = aux->next;
+    }
+    return simple;
 }
 
 void insertLabel (char * label) {
@@ -177,6 +189,7 @@ int getFunSize (char * id) {
 }
 
 void initCode (QuadList head) {
+    instructionI(addi,$lp,$zero,lploc,NULL);
     insertFun("global");
 }
 
@@ -262,38 +275,60 @@ void generateInstruction (QuadList l) {
                 aux = getMemLoc(a2.contents.var.name,a2.contents.var.scope);
                 if (aux == -1) { // caso a variável for global
                     aux = getMemLoc(a2.contents.var.name, "global");
-                    
-                }
-                if(a3.kind == Empty) // caso não seja um vetor
-                    instructionI(ldi, getReg(a1.contents.var.name), none, aux, NULL);
-                
-                else{// caso seja um vetor
+                    if(a3.kind == Empty) // caso não seja um vetor global
+                        instructionI(ldi, getReg(a1.contents.var.name), none, aux, NULL);
+                    else{ // caso seja um vetor global
+                        aux += a3.contents.val-1;
+                        instructionI(ldi, getReg(a1.contents.var.name), none, aux, NULL);
+                    }
+                }else if(a3.kind == Empty) // caso não seja um vetor local
+                    instructionI(ldr, getReg(a1.contents.var.name), $lp, aux, NULL);
+                 
+                else{// caso seja um vetor local
                     aux += a3.contents.val-1;
-                    instructionI(ldi, getReg(a1.contents.var.name), none, aux, NULL);
+                    instructionI(ldr, getReg(a1.contents.var.name), $lp, aux, NULL);
                 }
                 break;
 
             case opVEC:
-                aux = getMemLoc(a2.contents.var.name,a2.contents.var.scope);
-                if (aux == -1) { // caso a variável for global
-                    aux = getMemLoc(a2.contents.var.name, "global");
-                    
-                }
-                instructionI(ldr,getReg(a1.contents.var.name),getReg(a3.contents.var.name),aux,NULL);
-                break;
+                if(getVarKind(a2.contents.var.name,a2.contents.var.scope) == address){
+                    instructionI(ldi,getReg(a1.contents.var.name),none,getMemLoc(a2.contents.var.name,a2.contents.var.scope),NULL);
+                    instructionR(add,getReg(a3.contents.var.name),getReg(a3.contents.var.name),getReg(a1.contents.var.name));
+                    instructionI(ldr,getReg(a1.contents.var.name),getReg(a3.contents.var.name),0,NULL);
+                }else{
+                    aux = getMemLoc(a2.contents.var.name,a2.contents.var.scope);
+                    if (aux == -1) { // caso a variável for global
+                        aux = getMemLoc(a2.contents.var.name, "global");
+                        instructionI(ldr,getReg(a1.contents.var.name),getReg(a3.contents.var.name),aux,NULL);    
+                    }else{
+                        instructionI(ldr,getReg(a1.contents.var.name),getReg(a3.contents.var.name),aux,NULL);
+                    }
+                }break;
 
             case opSTORE:
                 aux = getMemLoc(a2.contents.var.name, a2.contents.var.scope);
-                if (aux == -1) aux = getMemLoc(a2.contents.var.name, "global");
+                if (aux == -1){ // caso seja uma variavel global
+                    aux = getMemLoc(a2.contents.var.name, "global");
 
-                if(a3.kind == Empty) // caso nãos eja um vetor
-                    instructionI(sti, getReg(a1.contents.var.name), $zero, aux, NULL);
+                    if(a3.kind == Empty) // caso não seja um vetor global
+                        instructionI(sti, getReg(a1.contents.var.name), none, aux, NULL);
+                    else if(a3.kind == IntConst){
+                        aux += a3.contents.val-1;
+                        instructionI(sti, getReg(a1.contents.var.name), none, aux, NULL);
+
+                    }else instructionI(str,getReg(a1.contents.var.name),getReg(a3.contents.var.name),aux,NULL);
+                    
+                }else if(a3.kind == Empty) // caso não seja um vetor local
+                    instructionI(str, getReg(a1.contents.var.name), $lp, aux, NULL);
                 
-                else if(a3.kind == IntConst){ // caso seja um vetor
+                else if(a3.kind == IntConst){ // caso seja um vetor local
                     aux += a3.contents.val-1;
-                    instructionI(sti, getReg(a1.contents.var.name), $zero, aux, NULL);
+                    instructionI(str, getReg(a1.contents.var.name), $lp, aux, NULL);
                 
-                } else instructionI(str,getReg(a1.contents.var.name),getReg(a3.contents.var.name),aux,NULL);
+                } else{
+                    instructionR(add,getReg(a3.contents.var.name),getReg(a3.contents.var.name),$lp);
+                    instructionI(str,getReg(a1.contents.var.name),getReg(a3.contents.var.name),aux,NULL);
+                }
                 break;
             
             case opGOTO:
@@ -350,9 +385,9 @@ void generateInstruction (QuadList l) {
                 break;
             
             case opARG:
-                insertVar(a3.contents.var.name, a1.contents.var.name, 1, simple);
+                insertVar(a3.contents.var.name, a1.contents.var.name, 1, checkType(l));
                 FunList f = funlisthead;
-                instructionI(sti, getArgReg(), none, a2.contents.val, NULL);
+                instructionI(str, getArgReg(), $lp, getMemLoc(a1.contents.var.name,a1.contents.var.scope), NULL);
                 curarg ++;
                 break;
             

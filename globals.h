@@ -59,7 +59,8 @@
 #define nregisters 32 // numero de registradores
 #define nregtemp 20 // numero de registradores temporários
 #define nregparam 10 // numero de registradores de parametros
-#define iniDataMem 361; // endereço da primeira posição da memória de dados
+#define iniDataMem 361 // endereço da primeira posição da memória de dados
+#define lploc 461 // endereço do inicio das variaveis locais
 
 /* Yacc/Bison gera os próprios valores inteiros para os tokens */
 typedef int TokenType;
