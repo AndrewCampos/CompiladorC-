@@ -575,7 +575,7 @@ void codeGen(TreeNode *syntaxTree){
   empty = addr_createEmpty();
   cGen(syntaxTree);
   quad_insert(opHLT, empty, empty, empty);
-  if(!Error){
+  if(PrintCode){
     printf(N_AZ"\nCódigo Intermediário:\n"RESET);
     printCode(head);
     fprintf(listing,N_VERD"Código intermediário criado com sucesso!\n\n"RESET);

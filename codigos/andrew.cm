@@ -1,6 +1,0 @@
-int main(int a, int c){
-	int b;
-	if(a == b){
-		a = 1;
-	}
-}

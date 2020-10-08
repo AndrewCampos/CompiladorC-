@@ -1,0 +1,33 @@
+int x;
+int vet[5];
+
+int soma (int a, int b, int c){
+    int total[5];
+    int jota;
+
+    total[2] = vet[3] + x;
+    return total;
+}
+
+int teste (int a, int b){
+    int total;
+
+    total = a + b;
+    return total;
+}
+
+int main(void){
+    int j;
+    int a;
+    a = 38;
+    j = 14;
+
+    if(a > 20){
+        a = teste(a, 12);
+    }
+    else{
+        a = soma(a, j+16,2);
+    }
+
+    return 0;
+}

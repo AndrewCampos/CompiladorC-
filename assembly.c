@@ -478,7 +478,8 @@ void printAssembly () {
 void generateAssembly (QuadList head) {
     initCode(head);
     createInstructions(head);
-    printAssembly();
+    if(PrintCode)
+        printAssembly();
    }
 
 AssemblyCode getAssembly() {

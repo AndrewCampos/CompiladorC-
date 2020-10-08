@@ -1,0 +1,72 @@
+  Var: x
+    Tipo: INT
+  Vetor: vet    Tipo: INT
+    Const: 5
+  Func: soma
+    Tipo: INT
+    Parametro: a
+      Tipo: INT
+    Parametro: b
+      Tipo: INT
+    Parametro: c
+      Tipo: INT
+    Vetor: total      Tipo: INT
+      Const: 5
+    Var: jota
+      Tipo: INT
+    Assign: 
+      Id: total
+        Const: 2
+      Op: +
+        Id: vet
+          Const: 3
+        Id: x
+    Return
+      Id: total
+  Func: teste
+    Tipo: INT
+    Parametro: a
+      Tipo: INT
+    Parametro: b
+      Tipo: INT
+    Var: total
+      Tipo: INT
+    Assign: 
+      Id: total
+      Op: +
+        Id: a
+        Id: b
+    Return
+      Id: total
+  Func: main
+    Tipo: INT
+    Tipo: VOID
+    Var: j
+      Tipo: INT
+    Var: a
+      Tipo: INT
+    Assign: 
+      Id: a
+      Const: 38
+    Assign: 
+      Id: j
+      Const: 14
+    If
+      Op: >
+        Id: a
+        Const: 20
+      Assign: 
+        Id: a
+        Chamada da Função: teste
+          Id: a
+          Const: 12
+      Assign: 
+        Id: a
+        Chamada da Função: soma
+          Id: a
+          Op: +
+            Id: j
+            Const: 16
+          Const: 2
+    Return
+      Const: 0

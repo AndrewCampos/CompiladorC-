@@ -28,11 +28,11 @@ FILE * source;
 FILE * listing;
 
 FlagType TraceScan = FALSE; // Imprimir tokens
-FlagType TraceParse = TRUE; // Imprimir árvore sintática
-FlagType TraceAnalyze = TRUE; // Imprimir tabela de simbolos
+FlagType TraceParse = FALSE; // Imprimir árvore sintática
+FlagType TraceAnalyze = FALSE; // Imprimir tabela de simbolos
 FlagType TraceCode = FALSE; // Imprimir nós da geração de código
-FlagType PrintCode = TRUE; // Imprimir os códigos gerados
-FlagType CreateFiles = FALSE; // Criar arquivos de compilação
+FlagType PrintCode = FALSE; // Imprimir os códigos gerados
+FlagType CreateFiles = TRUE; // Criar arquivos de compilação
 FlagType Error = FALSE; // Flag que marca a existência de erros
 
 int main( int argc, char * argv[] ) {

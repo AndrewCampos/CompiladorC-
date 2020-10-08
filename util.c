@@ -5,6 +5,8 @@
 #include "util.h"
 #include "cgen.h"
 #include "symtab.h"
+#include "assembly.h"
+#include "binary.h"
 /* Variável indentno é usado pelo printTree para armazenar o número atual de espaços para identação */
 static int indentno = 0;
 
@@ -194,16 +196,18 @@ void nomeiaArquivos(char *nome){
    strcat(ArvSint,".tree");
    strcat(TabSimb,".tab");
    strcat(interCode,".itm");
-   strcat(assCode,".assb");
+   strcat(assCode,".asb");
    strcat(binCode,".binc");
 }
 
 void makeFiles(){
   int i;
-  FILE *arvore, *tabela, *intermed, *temp;
+  FILE *arvore, *tabela, *intermed, *temp, *assembly, *binary;
   arvore = fopen(ArvSint,"w");
   tabela = fopen(TabSimb,"w");
   intermed = fopen(interCode,"w");
+  assembly = fopen(assCode,"w");
+  binary = fopen(binCode,"w");
   temp = listing;
   listing = arvore;
   printTree(syntaxTree);
@@ -211,6 +215,10 @@ void makeFiles(){
   printSymTab(listing);
   listing = intermed;
   printCode(getIntermediate());
+  listing = assembly;
+  printAssembly();
+  listing = binary;
+  generateBinary();
   listing = temp;
   fclose(arvore);
   fclose(tabela);

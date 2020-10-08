@@ -1,0 +1,23 @@
+---------------------------------------------------------------------------------
+Nome           Escopo  Tipo ID  Tipo Retorno  Tipo Param  Mem. Loc.  Num da linha
+-------------  ------  -------  ------------  ----------  ---------  ------------
+main           global  fun      INT           VOID           -        19; 
+vet            global  vet      INT           null           362       2;   8; 
+a              main    var      INT           null           2        21;  22;  25;  26;  26;  29;  29; 
+a              teste   var      INT           null           1        12;  15; 
+a              soma    var      INT           null           1         4; 
+b              teste   var      INT           null           2        12;  15; 
+b              soma    var      INT           null           2         4; 
+c              soma    var      INT           null           3         4; 
+return         main    ret      INT           null           -        32; 
+return         teste   ret      INT           null           -        16; 
+return         soma    ret      INT           null           -         9; 
+j              main    var      INT           null           1        20;  23;  29; 
+x              global  var      INT           null           361       1;   8; 
+jota           soma    var      INT           null           9         6; 
+total          teste   var      INT           null           3        13;  15;  16; 
+total          soma    vet      INT           null           4         5;   8;   9; 
+teste          main    call     INT           null           -        26; 
+teste          global  fun      INT           INT            -        12; 
+soma           main    call     INT           null           -        29; 
+soma           global  fun      INT           INT            -         4; 

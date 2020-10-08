@@ -49,4 +49,6 @@ void generateAssembly (QuadList head);
 
 AssemblyCode getAssembly ();
 
+void printAssembly ();
+
 int getSize();
