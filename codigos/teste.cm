@@ -1,9 +1,9 @@
-int c[10];
-int d;
+void teste(int j[]){
+    int i;
+    j[1] = 2;
+}
 
 void main(void){
-    int a[12];
-    int b;
-    a[1] = c[3] + d;
-    d = b;
+    int a[10];
+    teste(a);
 }

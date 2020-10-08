@@ -71,7 +71,6 @@ void insertVar (char * scope, char * id, int size, VarKind kind) {
 }
 
 VarKind checkType (QuadList l) {
-   // printf("entrou no checktype \n");
     QuadList aux = l;
     Quad q = aux->quad;
     aux = aux->next;
@@ -262,9 +261,9 @@ void generateInstruction (QuadList l) {
             
             case opALLOC:
                 if (a2.contents.val == 1){
-                 insertVar(a3.contents.var.name, a1.contents.var.name, a2.contents.val, simple);
+                 insertVar(a3.contents.var.scope, a1.contents.var.name, a2.contents.val, simple);
                 }
-                else insertVar(a3.contents.var.name, a1.contents.var.name, a2.contents.val, vector);
+                else insertVar(a3.contents.var.scope, a1.contents.var.name, a2.contents.val, vector);
                 break;
             
             case opADDI:
@@ -275,24 +274,14 @@ void generateInstruction (QuadList l) {
                 aux = getMemLoc(a2.contents.var.name,a2.contents.var.scope);
                 if (aux == -1) { // caso a variável for global
                     aux = getMemLoc(a2.contents.var.name, "global");
-                    if(a3.kind == Empty) // caso não seja um vetor global
-                        instructionI(ldi, getReg(a1.contents.var.name), none, aux, NULL);
-                    else{ // caso seja um vetor global
-                        aux += a3.contents.val-1;
-                        instructionI(ldi, getReg(a1.contents.var.name), none, aux, NULL);
-                    }
-                }else if(a3.kind == Empty) // caso não seja um vetor local
+                    instructionI(ldi, getReg(a1.contents.var.name), none, aux, NULL);
+                }else 
                     instructionI(ldr, getReg(a1.contents.var.name), $lp, aux, NULL);
-                 
-                else{// caso seja um vetor local
-                    aux += a3.contents.val-1;
-                    instructionI(ldr, getReg(a1.contents.var.name), $lp, aux, NULL);
-                }
                 break;
 
             case opVEC:
                 if(getVarKind(a2.contents.var.name,a2.contents.var.scope) == address){
-                    instructionI(ldi,getReg(a1.contents.var.name),none,getMemLoc(a2.contents.var.name,a2.contents.var.scope),NULL);
+                    instructionI(ldr,getReg(a1.contents.var.name),$lp,getMemLoc(a2.contents.var.name,a2.contents.var.scope),NULL);
                     instructionR(add,getReg(a3.contents.var.name),getReg(a3.contents.var.name),getReg(a1.contents.var.name));
                     instructionI(ldr,getReg(a1.contents.var.name),getReg(a3.contents.var.name),0,NULL);
                 }else{
@@ -339,7 +328,10 @@ void generateInstruction (QuadList l) {
                 if (a1.kind == String) instructionI(addi, $ret, getReg(a1.contents.var.name), 0, NULL);
                 else instructionI(addi, $ret, $zero, a1.contents.val, NULL);
                 
-                if(strcmp(a1.contents.var.scope,"main") != 0) instructionJ(jst, 0, NULL);
+                if(strcmp(a1.contents.var.scope,"main") != 0){
+                    instructionJ(jst, 0, NULL);
+
+                } else instructionJ(jmp, -1, "end");
                 break;
             
             case opFUN:
@@ -374,18 +366,17 @@ void generateInstruction (QuadList l) {
                     instructionSYS(out,$p1);
                 }
                 else {
-                    /*if(a1.kind != Empty){
-                        aux = getFunSize(a1.contents.var.scope);
-                        instructionI(addi, $zero, $zero, -aux, NULL);
-                    }*/
+                    aux = getFunSize(a2.contents.var.scope);
+                    instructionI(addi,$lp,$lp,aux,NULL);
                     instructionJ(jal, -1, a2.contents.var.name);
+                    instructionI(subi,$lp,$lp,aux,NULL);
                 }
                 narg = a3.contents.val;
                 curparam = 0;
                 break;
             
             case opARG:
-                insertVar(a3.contents.var.name, a1.contents.var.name, 1, checkType(l));
+                insertVar(a3.contents.var.scope, a1.contents.var.name, 1, checkType(l));
                 FunList f = funlisthead;
                 instructionI(str, getArgReg(), $lp, getMemLoc(a1.contents.var.name,a1.contents.var.scope), NULL);
                 curarg ++;

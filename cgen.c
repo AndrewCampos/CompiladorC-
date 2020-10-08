@@ -174,7 +174,7 @@ static void genStmt(TreeNode *tree){
     if (p3 != NULL){
       // goes to the end
       loc3 = location;
-      quad_insert(opGOTO, empty, empty, empty); //sair else
+      //quad_insert(opGOTO, empty, empty, empty); //sair else
     }
     label = newLabel();
     // final
@@ -289,20 +289,11 @@ static void genExp(TreeNode *tree){
       temp = newTemp();
       addr1 = addr_createString(temp, var_escopo);
       addr2 = aux;
-      if(p1->kind.exp == ConstK){ // caso indice seja um numero
-        addr3 = addr_createIntConst(p1->attr.val);
-        quad_insert(opLOAD, addr1, addr2, addr3);
-        var = addr2;
-        offset = addr3;
-        aux = addr1;
-      }
-      else{ // caso indice seja uma variável ou expressão
-        cGen(p1);
-        quad_insert(opVEC, addr1, addr2, aux);
-        var = addr2;
-        offset = aux;
-        aux = addr1;
-      }
+      cGen(p1);
+      quad_insert(opVEC, addr1, addr2, aux);
+      var = addr2;
+      offset = aux;
+      aux = addr1;
     }
     else{ // caso não seja vetor
       temp = newTemp();
@@ -354,16 +345,14 @@ static void genExp(TreeNode *tree){
 
       if(p1->kind.exp == IdK){
         if(getVarType(p1->attr.name,var_escopo) == VET){
-          printf("......\n");
           temp = newTemp();
           aux = addr_createString(temp,var_escopo);
-          quad_insert(opADDI,aux,addr_createString("$zero",var_escopo),addr_createIntConst(getMemLoc(p1->attr.name,var_escopo)));
+          quad_insert(opADDI,aux,addr_createString("$lp",var_escopo),addr_createIntConst(getMemLoc(p1->attr.name,var_escopo)));
         
         }else cGen(p1);
       }else{
         cGen(p1);
       }
-      //cGen(p1);
       quad_insert(opPARAM, aux, empty, empty);
       nparams--;
       p1 = p1->sibling;
@@ -410,7 +399,7 @@ static void genExp(TreeNode *tree){
       emitComment("-> Var ");
     
     if (memLoc >= 0){
-      quad_insert(opALLOC, addr_createString(tree->attr.name, var_escopo), addr_createIntConst(memLoc), addr_createString(var_escopo,var_escopo));
+      quad_insert(opALLOC, addr_createString(tree->attr.name, var_escopo), addr_createIntConst(1), addr_createString(var_escopo,var_escopo));
     }else{
       printf(N_VERM "Erro ao alocar a variável '%s'! - memLoc: %d\n" RESET,tree->attr.name,memLoc);
       Error = TRUE;
@@ -426,7 +415,7 @@ static void genExp(TreeNode *tree){
       emitComment("-> Vet ");
     
     if (memLoc >= 0){
-      quad_insert(opALLOC, addr_createString(tree->attr.name, var_escopo), addr_createIntConst(memLoc), addr_createString(var_escopo,var_escopo));
+      quad_insert(opALLOC, addr_createString(tree->attr.name, var_escopo), addr_createIntConst(tree->child[1]->attr.val), addr_createString(var_escopo,var_escopo));
     }else{
       printf(N_VERM "Erro ao alocar o vetor '%s'! - memLoc: %d\n" RESET,tree->attr.name,memLoc);
       Error = TRUE;
