@@ -5,7 +5,7 @@
 #define INDIF -1
 
 /* counter for variable memory locations */
-static int location = 0;
+static int location = iniDataMem;
 char* escopo = "global";
 int check_return = FALSE;
 
