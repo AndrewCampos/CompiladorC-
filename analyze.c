@@ -65,7 +65,7 @@ static void insertNode( TreeNode * t) {
 
       case ReturnINT:
         if(getFunType(escopo) == VOIDTYPE){
-          printf(N_VERM"[%d] Erro Semântico!"RESET" Retorno da função '%s' incompatível.",t->lineno,escopo);
+          printf(N_VERM"[%d] Erro Semântico!"RESET" Retorno da função '%s' incompatível.\n",t->lineno,escopo);
           Error = TRUE;
         }
         st_insert("return",t->lineno,0,escopo,INTTYPE, NULLL, RETT, t->vet); 

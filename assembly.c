@@ -434,7 +434,8 @@ void createInstructions (QuadList head) {
 
 void printAssembly () {
     AssemblyCode a = codehead;
-    printf(N_AZ "\nC- Assembly Code\n" RESET);
+    if(PrintCode)
+        printf(N_AZ "\nC- Assembly Code\n" RESET);
     while (a != NULL) {
         if (a->kind == instr) {
             switch(a->line.instruction.format){
@@ -471,7 +472,8 @@ void printAssembly () {
         }
         a = a->next;
     }
-    printf(N_VERD "Código assembly criado com sucesso!\n");
+    if(PrintCode)
+        printf(N_VERD "Código assembly criado com sucesso!\n");
 }
 
 /* Função inicial da geração de código assembly */
