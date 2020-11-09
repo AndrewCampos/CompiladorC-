@@ -223,4 +223,6 @@ void makeFiles(){
   fclose(arvore);
   fclose(tabela);
   fclose(intermed);
+  fclose(assembly);
+  fclose(binary);
 }

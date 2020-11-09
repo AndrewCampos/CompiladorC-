@@ -32,7 +32,7 @@ FlagType TraceParse = FALSE; // Imprimir árvore sintática
 FlagType TraceAnalyze = FALSE; // Imprimir tabela de simbolos
 FlagType TraceCode = FALSE; // Imprimir nós da geração de código
 FlagType PrintCode = FALSE; // Imprimir os códigos gerados
-FlagType CreateFiles = TRUE; // Criar arquivos de compilação
+FlagType CreateFiles = FALSE; // Criar arquivos de compilação
 FlagType Error = FALSE; // Flag que marca a existência de erros
 
 int main( int argc, char * argv[] ) {
@@ -40,7 +40,7 @@ int main( int argc, char * argv[] ) {
   char path[120];
   if (argc != 2) {
     fprintf(stderr,N_VERM"Arquivo não especificado.\n Uso: %s <nome do arquivo>\n"RESET,argv[0]);
-    exit(1);
+    exit(-1);
   }
   strcpy(path,"codigos/");
   strcpy(pgm,argv[1]) ;
@@ -50,7 +50,7 @@ int main( int argc, char * argv[] ) {
   source = fopen(path,"r");
   if (source==NULL) {
     fprintf(stderr,N_VERM"Arquivo %s não encontrado.\n"RESET,path);
-    exit(1);
+    exit(-1);
   }
   listing = stdout; /* send listing to screen */
   fprintf(listing,N_BRC"\nCOMPILAÇÃO DO ARQUIVO C-\n"RESET);
@@ -86,7 +86,17 @@ int main( int argc, char * argv[] ) {
   generateBinary();  // GERADOR DE COD. BINÁRIO
   listing = stdout;
   fprintf(listing, N_VERD "Compilação concluida com sucesso!\n\n" RESET);
+  // Cria os arquivos de compilação
   if(CreateFiles) makeFiles();
+  else{
+    FILE *binary, *temp;
+    temp = listing;
+    binary = fopen(binCode,"w");
+    listing = binary;
+    generateBinary();
+    listing = temp;
+    fclose(binary);
+  }
 
 
 #endif

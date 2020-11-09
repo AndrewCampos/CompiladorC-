@@ -338,10 +338,11 @@ static void genExp(TreeNode *tree){
     p1 = tree->child[0];
 
     while (p1 != NULL){
+      /*
       if(strcmp(tree->attr.name,"output") == 0){
         quad_insert(opADDI, addr_createString("$p1", var_escopo), aux, addr_createIntConst(0));
         return;
-      }
+      }*/
 
       if(p1->kind.exp == IdK){
         if(getVarType(p1->attr.name,var_escopo) == VET){
