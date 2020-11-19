@@ -85,14 +85,12 @@ Respectivamente, as _flags_ representam a impressão no terminal dos _tokens_ l�
 ### Resultado
 
 O compilador já está em sua fase final de testes (inclusive com testes integrados ao processador referente) e consegue fazer todo o processo de tradução de forma satisfatória. Porem apesar já estar com sua funcionalidade completa ainda existem alguns erros encontrados durante os testes que precisam ser refinados, sendo eles:
-- Uso de vetores sem índice não é tratado como erro
-Ex:
+- Uso de vetores sem índice não é tratado como erro. **Ex:**
 ```C
 int i[10]; 
 return i;
 ```
-- Funções com número de parametros errados não retornam erro
-Ex:
+- Funções com número de parametros errados não retornam erro. **Ex:**
 ```C
 void func(int a){ ... }
 
