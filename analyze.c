@@ -105,11 +105,11 @@ static void insertNode( TreeNode * t) {
           break;
 
         case VarParamK:
-            st_insert(t->attr.name,t->lineno,location++,escopo,INTTYPE, TIPO, VAR, t->vet);
+            st_insert(t->attr.name,t->lineno,location++,escopo,INTTYPE, TIPO, PVAR, t->vet);
           break;
 
         case VetParamK:
-            st_insert(t->attr.name,t->lineno,location++,escopo,INTTYPE, TIPO, VET, t->vet);
+            st_insert(t->attr.name,t->lineno,location++,escopo,INTTYPE, TIPO, PVET, t->vet);
           break;
 
         case IdK:
@@ -119,7 +119,10 @@ static void insertNode( TreeNode * t) {
               Error = TRUE;
             }
             else {
-              st_insert(t->attr.name,t->lineno,0,escopo,INTTYPE, TIPO,FUN, t->vet);
+              if(t->child[0] != NULL)
+                st_insert(t->attr.name,t->lineno,0,escopo,INTTYPE, TIPO, VET, t->vet);
+              else
+                st_insert(t->attr.name,t->lineno,0,escopo,INTTYPE, TIPO, VAR, t->vet);
             }
           }
           break;
@@ -130,7 +133,13 @@ static void insertNode( TreeNode * t) {
             Error = TRUE;
           }
           else {
-            st_insert(t->attr.name,t->lineno,INDIF,escopo,getFunType(t->attr.name), TIPO,CALL, t->vet);
+            if(t->params == getNumParam(t->attr.name) || strcmp(t->attr.name,"output")==0 || strcmp(t->attr.name,"input")==0)
+              st_insert(t->attr.name,t->lineno,INDIF,escopo,getFunType(t->attr.name), TIPO,CALL, t->vet);
+
+            else{
+              fprintf(listing,N_VERM"[%d] Erro Semântico!"RESET" Número de parâmetros para a função '%s' incompatível.\n",t->lineno,t->attr.name);
+              Error = TRUE;
+            }
           }
           break;
         default:

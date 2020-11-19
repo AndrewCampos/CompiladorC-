@@ -47,6 +47,13 @@ void assembly2binary(AssemblyCode codeLine){
                                                            inst.reg1,
                                                            inst.imed);
                 fprintf(listing,"   // %s\n",Prefixos[inst.opcode]);
+            }else if(inst.opcode == bgt || inst.opcode == blt){
+                fprintf(listing,"ram[%d] = {6'b%s, 5'd%d, 5'd%d, 16'd%d};",codeLine->lineno,
+                                                           opcodeBins[inst.opcode],
+                                                           inst.reg1,
+                                                           inst.reg2,
+                                                           inst.imed);
+                fprintf(listing,"   // %s\n",Prefixos[inst.opcode]);
             }else{
                 fprintf(listing,"ram[%d] = {6'b%s, 5'd%d, 5'd%d, 16'd%d};",codeLine->lineno,
                                                            opcodeBins[inst.opcode],
@@ -84,4 +91,5 @@ void generateBinary () {
         assembly2binary(a);
         a = a->next;
     }
+    PrintCode = FALSE;
 }

@@ -1,5 +1,14 @@
+int funca(int i[]){
+    return 0;
+}
+
+int funcb(int c){
+    return 0;
+}
+
 int main(void){
-    int a[10];
-    a[2] = 5;
+    int a;
+    int c[10];
+    c[1] = a * (funca(a));
     return 0;
 }

@@ -260,6 +260,7 @@ var: ID {
         $$ = newExpNode(IdK);
         $$->attr.name = copyString(id);
         $$->lineno = lineno;
+        $$->child[0] = NULL;
   } |fun-id ACO exp FCO {
         $$ = newExpNode(IdK);
         $$->attr.name = $1->attr.name;

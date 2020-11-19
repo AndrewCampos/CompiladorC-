@@ -340,7 +340,7 @@ static void genExp(TreeNode *tree){
     while (p1 != NULL){
 
       if(p1->kind.exp == IdK){
-        if(getVarType(p1->attr.name,var_escopo) == VET){
+        if(getVarType(p1->attr.name,var_escopo) == PVET){
           temp = newTemp();
           aux = addr_createString(temp,var_escopo);
           quad_insert(opADDI,aux,addr_createString("$lp",var_escopo),addr_createIntConst(getMemLoc(p1->attr.name,var_escopo)));

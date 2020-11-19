@@ -83,7 +83,7 @@ typedef enum {OpK,ConstK,IdK,VarDeclK,VetDeclK,FunDeclK,AtivK,TypeK,VetorK,VarPa
 /* ExpType é usado para checagem de tipo */
 typedef enum {Void,Integer,Boolean} ExpType;
 typedef enum {INTTYPE, VOIDTYPE, NULLL} dataTypes;
-typedef enum {VAR, FUN, CALL, VET, RETT} IDTypes;
+typedef enum {VAR, PVAR, FUN, CALL, VET, PVET, RETT} IDTypes;
 
 #define MAXCHILDREN 3
 

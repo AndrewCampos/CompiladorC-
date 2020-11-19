@@ -14,11 +14,6 @@ static int hash ( char * key ){
   return temp;
 }
 
-/* Procedure st_insert inserts line numbers and
- * memory locations into the symbol table
- * loc = memory location is inserted only the
- * first time, otherwise ignored
- */
 void st_insert( char * name, int lineno, int op, char* escopo, dataTypes RetType, dataTypes StmtType, IDTypes IType, int vet ){
   int h = hash(name);
   BucketList l =  hashTable[h];
@@ -55,7 +50,7 @@ void st_insert( char * name, int lineno, int op, char* escopo, dataTypes RetType
       t->next = (LineList) malloc(sizeof(struct LineListRec));
       t->next->lineno = lineno;
       t->next->next = NULL;
-      return ;
+      return;
     }
   }
 
@@ -84,6 +79,7 @@ void st_insert( char * name, int lineno, int op, char* escopo, dataTypes RetType
       l->lines->next = NULL;
       l->next = hashTable[h];
       hashTable[h] = l;
+      if(IType == PVET || IType == PVAR) insereParam(escopo);
     }
   }
   else if( (l->IType == FUN  && IType == VAR) || (l->IType == CALL  && IType == VAR)){
@@ -111,15 +107,23 @@ void st_insert( char * name, int lineno, int op, char* escopo, dataTypes RetType
       Error = TRUE;
     }
   }
-  else if(op == 0)
-  {
+  else if(op == 0){
     LineList t = l->lines;
+    if((l->IType != VAR && l->IType != PVAR) && IType == VAR){
+      fprintf(listing,N_VERM"[%d] Erro semântico!"RESET" Vetor '%s' usado como variável.\n",lineno,name);
+      Error = TRUE;
+      return;
+    }else if((l->IType != VET && l->IType != PVET) && IType == VET){
+      fprintf(listing,N_VERM"[%d] Erro semântico!"RESET" Variável '%s' usada como vetor.\n",lineno,name);
+      Error = TRUE;
+      return;
+    }
     while (t->next != NULL) t = t->next;
     t->next = (LineList) malloc(sizeof(struct LineListRec));
     t->next->lineno = lineno;
     t->next->next = NULL;
   }
-} /* st_insert */
+}
 
 int st_lookup ( char * name, char * escopo){
   int h = hash(name);
@@ -132,7 +136,6 @@ int st_lookup ( char * name, char * escopo){
     }
 }
 
-/*Função que confere se a main() foi declarada */
 void busca_main () {
   int h = hash("main");
   BucketList l =  hashTable[h];
@@ -211,6 +214,34 @@ IDTypes getVarType(char* nome, char* escopo){
   else return l->IType;
 }
 
+int getNumParam(char *nome){
+  int h = hash(nome);
+  BucketList l =  hashTable[h];
+  if(nome == NULL) return -1;
+  while ((l != NULL)){
+    if (strcmp(nome,l->name) == 0){
+      if(l->IType == FUN) break;
+    }
+    l = l->next;
+  }
+  if (l == NULL) return -1;
+  else return l->tam;
+}
+
+void insereParam(char *nome){
+  int h = hash(nome);
+  BucketList l =  hashTable[h];
+  if(nome == NULL) return;
+  while ((l != NULL)){
+    if (strcmp(nome,l->name) == 0){
+      if(l->IType == FUN) break;
+    }
+    l = l->next;
+  }
+  if (l == NULL) return;
+  else l->tam++;
+}
+
 void printSymTab(FILE * listing) {
   int i;
   fprintf(listing,"---------------------------------------------------------------------------------\n");
@@ -227,19 +258,25 @@ void printSymTab(FILE * listing) {
         switch(l->IType){
           case RETT:
             id = "ret";
-          break;
+            break;
           case VAR:
             id = "var";
-          break;
+            break;
+          case PVAR:
+            id = "pvar";
+            break;
           case FUN:
              id = "fun";
-          break;
+            break;
           case CALL:
              id = "call";
-          break;
+            break;
           case VET:
             id= "vet";
-          break;
+            break;
+          case PVET:
+            id= "pvet";
+            break;
           default:
           break;
         }
