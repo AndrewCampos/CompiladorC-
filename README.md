@@ -51,36 +51,49 @@ Além dos arquivos citados acima, também existem mais arquivos para que a conex
 
 ### ESPECIFICAÇÕES PARA FUNCIONAMENTO DO COMPILADOR:
 
-**Comandos para dar permissão aos scripts:
+Primeiramente ao baixar o reposítório gararanta que tenha instalado os pacotes do Flex e do Bison, em seguida abra o terminal na raiz da pasta do compilador e insira os seguintes comandos para conceder permissão aos _scripts_ para a montagem e desmontagem do mesmo
 ```
-$ chmod +x run.sh (compilar o compilador)
+$ chmod +x run.sh (montar o compilador)
 
 $ chmod +x clean.sh (limpar arquivos de montagem)
 ```
-
-**Executar compilador:
+Para executar o compilador, primeiramente é preciso montar o mesmo, compilando todos seus arquivos ao executar o primeiro _script_:
 ```
 $ ./run.sh
-
-$ ./compilador [diretorio do arquivo a ser testado]
-
+```
+Em seguida, mova o código C- para a pasta códigos e execute o código abaixo para compilar. Tenha certeza de que o arquivo contem a extensão _.cm_:
+```
+$ ./compilador [nome do arquivo a ser compilado]
+```
+Por fim, caso deseje apagar os arquivos gerados pela montagem do compilador, mantendo apenas seus códigos não compilados, execute o _script_ abaixo:
+```
 $ ./clean.sh
 ```
+**Obs:** Após a execussão do _script clean.sh_ o compilador não funcionará até o _script run.sh_ seja executado novamente. Caso o _script_ de limpeza não seja executado o compilador pode ser utilizado quantas vezes for desejado, mesmo após reiniciar o computador.
+
+No arquivo _main.c_ existe uma série de _flags_ que controlam a geração de arquivos intermediários ou a impressão dos mesmos no terminal.
+```C
+FlagType TraceScan = FALSE;
+FlagType TraceParse = FALSE;
+FlagType TraceAnalyze = FALSE; 
+FlagType TraceCode = FALSE;
+FlagType PrintCode = FALSE;
+FlagType CreateFiles = FALSE;
+```
+Respectivamente, as _flags_ representam a impressão no terminal dos _tokens_ léxicos, da árvore sintática, da tabela de simbolos, das _labels_ de percorrimento durante a geração de código intermediário assim como a impressão dos códigos e da criação de arquivos com essas estruturas. O valor **FALSE** define a não geração/impressão da estrutura tratada pela _flag_, enquanto o valor **TRUE** define o caso contrário.
 
 ### OBSERVAÇÕES
 
 Apesar já estar com sua funcionalidade completa ainda existem alguns ponto que precisam ser refinados, sendo eles:
 - Uso de vetores sem índice não é tratado como erro
 Ex:
-```
-C
+```C
 int i[10]; 
 return i;
 ```
 - Funções com número de parametros errados não retornam erro
 Ex:
-```
-C
+```C
 void func(int a){ ... }
 
 func(a,b);
