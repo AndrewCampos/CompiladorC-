@@ -82,7 +82,7 @@ FlagType CreateFiles = FALSE;
 ```
 Respectivamente, as _flags_ representam a impressão no terminal dos _tokens_ léxicos, da árvore sintática, da tabela de simbolos, das _labels_ de percorrimento durante a geração de código intermediário assim como a impressão dos códigos e da criação de arquivos com essas estruturas. O valor **FALSE** define a não geração/impressão da estrutura tratada pela _flag_, enquanto o valor **TRUE** define o caso contrário.
 
-### Resultado
+## Resultado
 
 O compilador já está em sua fase final de testes (inclusive com testes integrados ao processador referente) e consegue fazer todo o processo de tradução de forma satisfatória. Porem apesar já estar com sua funcionalidade completa ainda existem alguns erros encontrados durante os testes que precisam ser refinados, sendo eles:
 - Uso de vetores sem índice não é tratado como erro. **Ex:**
