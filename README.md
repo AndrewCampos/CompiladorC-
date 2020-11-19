@@ -49,7 +49,7 @@ A fase de síntese é executada apenas se a fase de análise foi executada compl
 
 Além dos arquivos citados acima, também existem mais arquivos para que a conexão entre eles possa ser feita. Intuitivamente exisstem arquivos de cabeçalho _.h_ que contém estruturas utilizadas em seus respectivos códigos, variáveis globais e funções que podem ser acessadas por outros arquivos. Também existem o cabeçalho _globals.h_ que se trata do cabeçalho global com estruturas que e variáveis que são compartilhados por todo o projeto. Por fim existem os arquivos de utilidades, sendo eles o arquivo _main.c_ que é o que contém a rotina de união do compilador e o arquivo _util.c_ que se trata de rotinas úteis que podem ser usadas por todos os módulos.
 
-### ESPECIFICAÇÕES PARA FUNCIONAMENTO DO COMPILADOR:
+### Especificações para Funcionamento do Compilador
 
 Primeiramente ao baixar o reposítório gararanta que tenha instalado os pacotes do Flex e do Bison, em seguida abra o terminal na raiz da pasta do compilador e insira os seguintes comandos para conceder permissão aos _scripts_ para a montagem e desmontagem do mesmo
 ```
@@ -82,9 +82,9 @@ FlagType CreateFiles = FALSE;
 ```
 Respectivamente, as _flags_ representam a impressão no terminal dos _tokens_ léxicos, da árvore sintática, da tabela de simbolos, das _labels_ de percorrimento durante a geração de código intermediário assim como a impressão dos códigos e da criação de arquivos com essas estruturas. O valor **FALSE** define a não geração/impressão da estrutura tratada pela _flag_, enquanto o valor **TRUE** define o caso contrário.
 
-### OBSERVAÇÕES
+### Resultado
 
-Apesar já estar com sua funcionalidade completa ainda existem alguns ponto que precisam ser refinados, sendo eles:
+O compilador já está em sua fase final de testes (inclusive com testes integrados ao processador referente) e consegue fazer todo o processo de tradução de forma satisfatória. Porem apesar já estar com sua funcionalidade completa ainda existem alguns erros encontrados durante os testes que precisam ser refinados, sendo eles:
 - Uso de vetores sem índice não é tratado como erro
 Ex:
 ```C
