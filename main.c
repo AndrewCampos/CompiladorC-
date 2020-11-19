@@ -39,7 +39,7 @@ int main( int argc, char * argv[] ) {
   char pgm[120]; /* nome do arquivo do código fonte */
   char path[120];
   if (argc != 2) {
-    fprintf(stderr,N_VERM"Arquivo não especificado.\n Uso: %s <nome do arquivo>\n"RESET,argv[0]);
+    fprintf(stderr,N_VERM"Arquivo não especificado.\nUso: %s <nome do arquivo>\n"RESET,argv[0]);
     exit(-1);
   }
   strcpy(path,"codigos/");
