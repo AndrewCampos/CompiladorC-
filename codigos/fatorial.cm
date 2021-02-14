@@ -12,7 +12,7 @@ int fatorial(int n){
 int main(void){
   int numero;
   int f;
-  
+  input();
   numero = input();
   
   f = fatorial(numero);

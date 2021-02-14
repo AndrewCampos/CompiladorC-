@@ -363,6 +363,10 @@ static void genExp(TreeNode *tree){
         if(strcmp(tree->attr.name,"input")==0)
           aux = addr_createString("$ret",var_escopo);
         quad_insert(opCALL, empty, addr_createString(tree->attr.name, var_escopo), addr_createIntConst(tree->params));
+        if(strcmp(tree->attr.name,"input")==0){
+          quad_insert(opADDI, addr_createString("$p1", var_escopo), addr_createString("$ret", var_escopo), addr_createIntConst(0));
+          quad_insert(opCALL, empty, addr_createString("output", var_escopo), addr_createIntConst(tree->params));
+        }
       }
 
     if (TraceCode)

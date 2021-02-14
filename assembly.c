@@ -3,6 +3,8 @@
 #include "cgen.h"
 #include "assembly.h"
 
+#define QUANTUM 20
+
 const char *InstrNames[] = { "add", "sub", "mult", "div", "and", "or", "nand", "nor", "sle", "slt", "sge", "addi", "subi", "divi", "multi", "andi", "ori",
                              "nori", "slei", "slti", "beq", "bne", "blt", "bgt", "sti", "ldi", "str", "ldr", "hlt", "in", "out", "jmp", "jal", "jst" };
 
@@ -18,6 +20,7 @@ int curparam = 0;
 int curarg = 0;
 int narg = 0;
 int jmpmain = 0;
+int switch_SO = 0;
 
 void insertFun (char * id) {
     FunList new = (FunList) malloc(sizeof(struct FunListRec));
@@ -100,6 +103,7 @@ void insertLabel (char * label) {
 
 void insertInstruction (InstrFormat format, InstrKind opcode, Reg reg1, Reg reg2, Reg reg3, int imed, char * label) {
     Instruction i;
+    switch_SO++;
     i.format = format;
     i.opcode = opcode;
     i.reg1 = reg1;
@@ -318,6 +322,7 @@ void generateInstruction (QuadList l) {
                     instructionR(add,getReg(a3.contents.var.name),getReg(a3.contents.var.name),$lp);
                     instructionI(str,getReg(a1.contents.var.name),getReg(a3.contents.var.name),aux,NULL);
                 }
+                if(switch_SO > QUANTUM) instructionSYS(ctso, none);
                 break;
             
             case opGOTO:
