@@ -128,12 +128,16 @@ static void insertNode( TreeNode * t) {
           break;
 
         case AtivK:
-          if (st_lookup(t->attr.name, escopo) == -1 && strcmp(t->attr.name, "input")!=0 && strcmp(t->attr.name, "output")!=0){
+          if (st_lookup(t->attr.name, escopo) == -1 && (strcmp(t->attr.name, "input") != 0) && (strcmp(t->attr.name, "output") != 0) &&
+             (strcmp(t->attr.name, "sysWake") != 0) && (strcmp(t->attr.name, "sysSleep") != 0) &&
+             (strcmp(t->attr.name, "loadStack") != 0) && (strcmp(t->attr.name, "saveStack") != 0)){
             fprintf(listing,N_VERM"[%d] Erro Semântico!"RESET" A função '%s' não foi declarada.\n",t->lineno,t->attr.name);
             Error = TRUE;
           }
           else {
-            if(t->params == getNumParam(t->attr.name) || strcmp(t->attr.name,"output")==0 || strcmp(t->attr.name,"input")==0)
+            if(t->params == getNumParam(t->attr.name) || strcmp(t->attr.name,"output")==0 || strcmp(t->attr.name,"input")==0 ||
+              (strcmp(t->attr.name, "sysWake") != 0) || (strcmp(t->attr.name, "sysSleep") != 0) ||
+              (strcmp(t->attr.name, "loadStack") != 0) || (strcmp(t->attr.name, "saveStack") != 0))
               st_insert(t->attr.name,t->lineno,INDIF,escopo,getFunType(t->attr.name), TIPO,CALL, t->vet);
 
             else{

@@ -6,7 +6,7 @@
 
 typedef enum {  opADD, opSUB, opMULT, opDIV, opBLT, opSLE, opBGT, opSGE, opBEQ, opBNE, opAND, opOR, opATRIB,
                 opALLOC, opADDI, opSUBI, opLOAD, opSTORE, opVEC, opGOTO, opIFF, opRET, opFUN, opEND, opPARAM,
-                opCALL, opARG, opLABEL, opHLT, opCTSO} OpKind;
+                opCALL, opARG, opLABEL, opHLT, opMOV, opPUT, opCTSO} OpKind;
 
 typedef enum {  Empty, IntConst, String } AddrKind;
 

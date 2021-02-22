@@ -6,7 +6,8 @@
 #define QUANTUM 20
 
 const char *InstrNames[] = { "add", "sub", "mult", "div", "and", "or", "nand", "nor", "sle", "slt", "sge", "addi", "subi", "divi", "multi", "andi", "ori",
-                             "nori", "slei", "slti", "beq", "bne", "blt", "bgt", "sti", "ldi", "str", "ldr", "hlt", "in", "out", "jmp", "jal", "jst" };
+                             "nori", "slei", "slti", "beq", "bne", "blt", "bgt", "sti", "ldi", "str", "ldr", "hlt", "in", "out", "jmp", "jal", "jst",
+                             "sleep", "wake", "lstk", "sstk", "mov", "put", "ctso" };
 
 const char * regNames[] = { "$zero", "$r1", "$r2", "$r3", "$r4", "$r5", "$r6", "$r7", "$r8", "$r9", "$r10", "$r11", "$r12", "$r13", "$r14", "$r15",
                             "$r16", "$r17", "$r18", "$r19", "$p1", "$p2", "$p3", "$p4", "$p5", "$p6", "$p7", "$p8", "$p9", "$p10", "$ret", "$lp","" };
@@ -104,6 +105,7 @@ void insertLabel (char * label) {
 void insertInstruction (InstrFormat format, InstrKind opcode, Reg reg1, Reg reg2, Reg reg3, int imed, char * label) {
     Instruction i;
     switch_SO++;
+    if(opcode == ctso) switch_SO = 0;
     i.format = format;
     i.opcode = opcode;
     i.reg1 = reg1;
@@ -211,6 +213,14 @@ void generateInstruction (QuadList l) {
         FunList g = funlisthead;
         switch (q.op) {
             
+            case opMOV:
+                instructionI(mov, getReg(a1.contents.var.name), getReg(a2.contents.var.name), a3.contents.val, NULL);
+                break;
+
+            case opPUT:
+                instructionI(put, getReg(a1.contents.var.name), getReg(a2.contents.var.name), a3.contents.val, NULL);
+                break;
+            
             case opADD:
                 instructionR(add, getReg(a1.contents.var.name), getReg(a2.contents.var.name), getReg(a3.contents.var.name));
                 break;
@@ -260,7 +270,7 @@ void generateInstruction (QuadList l) {
                 break;
             
             case opATRIB:
-                instructionI(addi, getReg(a1.contents.var.name), getReg(a2.contents.var.name),0,NULL);
+                instructionI(mov, getReg(a1.contents.var.name), getReg(a2.contents.var.name),0,NULL);
                 break;
             
             case opALLOC:
@@ -330,8 +340,8 @@ void generateInstruction (QuadList l) {
                 break;
             
             case opRET:
-                if (a1.kind == String) instructionI(addi, $ret, getReg(a1.contents.var.name), 0, NULL);
-                else instructionI(addi, $ret, $zero, a1.contents.val, NULL);
+                if (a1.kind == String) instructionI(mov, $ret, getReg(a1.contents.var.name), 0, NULL);
+                else instructionI(mov, $ret, $zero, a1.contents.val, NULL);
                 
                 if(strcmp(a1.contents.var.scope,"main") != 0){
                     instructionJ(jst, 0, NULL);
@@ -359,7 +369,7 @@ void generateInstruction (QuadList l) {
                 break;
             
             case opPARAM:
-                instructionI(addi, getParamReg(), getReg(a1.contents.var.name), 0, NULL);
+                instructionI(mov, getParamReg(), getReg(a1.contents.var.name), 0, NULL);
                 curparam = (curparam+1)%nregparam;
                 break;
             
@@ -369,6 +379,18 @@ void generateInstruction (QuadList l) {
                 }
                 else if (strcmp(a2.contents.var.name, "output") == 0) {
                     instructionSYS(out,$p1);
+                }
+                else if (strcmp(a2.contents.var.name, "sysWake") == 0){
+                    instructionSYS(wake, none);
+                }
+                else if (strcmp(a2.contents.var.name, "sysSleep") == 0){
+                    instructionSYS(sleep, none);
+                }
+                else if (strcmp(a2.contents.var.name, "loadStack") == 0){
+                    instructionSYS(lstk, $p1);
+                }
+                else if (strcmp(a2.contents.var.name, "saveStack") == 0){
+                    instructionSYS(sstk, $p1);
                 }
                 else {
                     aux = getFunSize(a2.contents.var.scope);
@@ -456,9 +478,9 @@ void printAssembly () {
             break;
 
             case formatSYS:
-                if(a->line.instruction.opcode == hlt)
+                if(a->line.instruction.opcode == hlt || a->line.instruction.opcode == wake || a->line.instruction.opcode == sleep || a->line.instruction.opcode == ctso)
                     fprintf(listing,"%d:\t%s\n", a->lineno, InstrNames[a->line.instruction.opcode]);
-                else if (a->line.instruction.opcode == in || a->line.instruction.opcode == out)
+                else if (a->line.instruction.opcode == in || a->line.instruction.opcode == out || a->line.instruction.opcode == sstk || a->line.instruction.opcode == lstk )
                     fprintf(listing,"%d:\t%s %s\n", a->lineno, InstrNames[a->line.instruction.opcode], regNames[a->line.instruction.reg2]);
                 else
                     fprintf(listing,"%d:\t%s %s %d\n", a->lineno, InstrNames[a->line.instruction.opcode], regNames[a->line.instruction.reg1], a->line.instruction.imed);
