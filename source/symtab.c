@@ -109,7 +109,7 @@ void st_insert( char * name, int lineno, int op, char* escopo, dataTypes RetType
   }
   else if(op == 0){
     LineList t = l->lines;
-    if((l->IType != VAR && l->IType != PVAR) && IType == VAR){
+    if((l->IType != VAR && l->IType != PVAR && l->IType != PVET) && IType == VAR){
       fprintf(listing,N_VERM"[%d] Erro semântico!"RESET" Vetor '%s' usado como variável.\n",lineno,name);
       Error = TRUE;
       return;

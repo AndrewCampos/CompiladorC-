@@ -1,7 +1,0 @@
-int main(void){
-    sysWake();
-    sysSleep();
-    loadStack(100);
-    saveStack();
-    return 0;
-}

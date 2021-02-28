@@ -332,7 +332,7 @@ void generateInstruction (QuadList l) {
                     instructionR(add,getReg(a3.contents.var.name),getReg(a3.contents.var.name),$lp);
                     instructionI(str,getReg(a1.contents.var.name),getReg(a3.contents.var.name),aux,NULL);
                 }
-                if(switch_SO > QUANTUM) instructionSYS(ctso, none);
+                if(switch_SO > QUANTUM && !SO) instructionSYS(ctso, none);
                 break;
             
             case opGOTO:
@@ -467,35 +467,37 @@ void printAssembly () {
         if (a->kind == instr) {
             switch(a->line.instruction.format){
             case formatR:
-                fprintf(listing,"%d:\t%s %s %s %s\n", a->lineno, InstrNames[a->line.instruction.opcode], regNames[a->line.instruction.reg1], regNames[a->line.instruction.reg2], regNames[a->line.instruction.reg3]);
+                fprintf(listing,"%s %s %s %s;\n", InstrNames[a->line.instruction.opcode], regNames[a->line.instruction.reg1], regNames[a->line.instruction.reg2], regNames[a->line.instruction.reg3]);
                 break;
 
             case formatI:
                 if(a->line.instruction.opcode == sti || a->line.instruction.opcode == ldi)
-                    fprintf(listing,"%d:\t%s %s %d\n", a->lineno, InstrNames[a->line.instruction.opcode], regNames[a->line.instruction.reg1], a->line.instruction.imed);
+                    fprintf(listing,"%s %s %d;\n", InstrNames[a->line.instruction.opcode], regNames[a->line.instruction.reg1], a->line.instruction.imed);
+                else if(a->line.instruction.opcode == put)
+                    fprintf(listing,"%s %s %d;\n", InstrNames[a->line.instruction.opcode], regNames[a->line.instruction.reg1], a->line.instruction.imed);
                 else
-                    fprintf(listing,"%d:\t%s %s %s %d\n", a->lineno, InstrNames[a->line.instruction.opcode], regNames[a->line.instruction.reg1], regNames[a->line.instruction.reg2], a->line.instruction.imed);
+                    fprintf(listing,"%s %s %s %d;\n", InstrNames[a->line.instruction.opcode], regNames[a->line.instruction.reg1], regNames[a->line.instruction.reg2], a->line.instruction.imed);
             break;
 
             case formatSYS:
                 if(a->line.instruction.opcode == hlt || a->line.instruction.opcode == wake || a->line.instruction.opcode == sleep || a->line.instruction.opcode == ctso)
-                    fprintf(listing,"%d:\t%s\n", a->lineno, InstrNames[a->line.instruction.opcode]);
+                    fprintf(listing,"%s;\n", InstrNames[a->line.instruction.opcode]);
                 else if (a->line.instruction.opcode == in || a->line.instruction.opcode == out || a->line.instruction.opcode == sstk || a->line.instruction.opcode == lstk )
-                    fprintf(listing,"%d:\t%s %s\n", a->lineno, InstrNames[a->line.instruction.opcode], regNames[a->line.instruction.reg2]);
+                    fprintf(listing,"%s %s;\n", InstrNames[a->line.instruction.opcode], regNames[a->line.instruction.reg2]);
                 else
-                    fprintf(listing,"%d:\t%s %s %d\n", a->lineno, InstrNames[a->line.instruction.opcode], regNames[a->line.instruction.reg1], a->line.instruction.imed);
+                    fprintf(listing,"%s %s %d;\n", InstrNames[a->line.instruction.opcode], regNames[a->line.instruction.reg1], a->line.instruction.imed);
                 break;
 
             case formatJ: {
                 if (a->line.instruction.opcode == jst)
-                    fprintf(listing,"%d:\t%s\n", a->lineno, InstrNames[a->line.instruction.opcode]);
+                    fprintf(listing,"%s;\n", InstrNames[a->line.instruction.opcode]);
                 else
-                    fprintf(listing,"%d:\t%s %d\n", a->lineno, InstrNames[a->line.instruction.opcode], a->line.instruction.imed);
+                    fprintf(listing,"%s %d;\n", InstrNames[a->line.instruction.opcode], a->line.instruction.imed);
             }
             }
         }
         else {
-            fprintf(listing,".%s\n", a->line.label);
+            fprintf(listing,"//%s\n", a->line.label);
         }
         a = a->next;
     }

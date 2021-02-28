@@ -125,4 +125,5 @@ extern FlagType TraceAnalyze;
 extern FlagType TraceCode;
 extern FlagType PrintCode;
 extern FlagType Error;
+extern FlagType SO;
 #endif

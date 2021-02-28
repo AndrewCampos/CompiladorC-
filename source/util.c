@@ -197,7 +197,7 @@ void nomeiaArquivos(char *nome){
    strcat(TabSimb,".tab");
    strcat(interCode,".itm");
    strcat(assCode,".asb");
-   strcat(binCode,".binc");
+   strcat(binCode,".bin");
 }
 
 void makeFiles(){

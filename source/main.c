@@ -29,19 +29,26 @@ FILE * listing;
 
 FlagType TraceScan = FALSE; // Imprimir tokens
 FlagType TraceParse = FALSE; // Imprimir árvore sintática
-FlagType TraceAnalyze = TRUE; // Imprimir tabela de simbolos
+FlagType TraceAnalyze = FALSE; // Imprimir tabela de simbolos
 FlagType TraceCode = FALSE; // Imprimir nós da geração de código
-FlagType PrintCode = TRUE; // Imprimir os códigos gerados
+FlagType PrintCode = FALSE; // Imprimir os códigos gerados
 FlagType CreateFiles = FALSE; // Criar arquivos de compilação
 FlagType Error = FALSE; // Flag que marca a existência de erros
+FlagType SO; // Indica se a compilação é de um SO
 
 int main( int argc, char * argv[] ) {
   char pgm[120]; /* nome do arquivo do código fonte */
   char path[120];
-  if (argc != 2) {
+
+  if (argc < 2) {
     fprintf(stderr,N_VERM"Arquivo não especificado.\nUso: %s <nome do arquivo>\n"RESET,argv[0]);
     exit(-1);
   }
+  if(argc == 3){
+    if(strcmp(argv[2],"-so") == 0) SO = TRUE;
+    else SO = FALSE;
+  }else SO = FALSE;
+  
   strcpy(path,"codigos/");
   strcpy(pgm,argv[1]) ;
   if (strchr (pgm, '.') == NULL)
@@ -89,13 +96,13 @@ int main( int argc, char * argv[] ) {
   // Cria os arquivos de compilação
   if(CreateFiles) makeFiles();
   else{
-    FILE *binary, *temp;
+    FILE *assembly, *temp;
     temp = listing;
-    binary = fopen(binCode,"w");
-    listing = binary;
-    generateBinary();
+    assembly = fopen(assCode,"w");
+    listing = assembly;
+    printAssembly();
     listing = temp;
-    fclose(binary);
+    fclose(assembly);
   }
 
 

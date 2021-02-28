@@ -4,6 +4,8 @@
 #include "assembly.h"
 #include <string.h>
 
+#define END_SWITCH 67
+
 const char *Prefixos[] = { "add", "sub", "mult", "div", "and", "or", "nand", "nor", "sle", "slt", "sge", "addi", "subi", "divi", "multi", "andi", "ori",
                              "nori", "slei", "slti", "beq", "bne", "blt", "bgt", "sti", "ldi", "str", "ldr", "hlt", "in", "out", "jmp", "jal", "jst",
                              "sleep", "wake", "lstk", "sstk", "mov", "put", "ctso" };
@@ -77,8 +79,8 @@ void assembly2binary(AssemblyCode codeLine){
                                                            opcodeBins[inst.opcode]);
                 fprintf(listing,"   // %s\n",Prefixos[inst.opcode]);
             }else if(inst.opcode == ctso){
-                fprintf(listing,"ram[%d] = {6'b%s, 26'd0};",codeLine->lineno,
-                                                           opcodeBins[jal]);
+                fprintf(listing,"ram[%d] = {6'b%s, 26'd%d};",codeLine->lineno,
+                                                           opcodeBins[jal],END_SWITCH);
                 fprintf(listing,"   // %s\n",Prefixos[inst.opcode]);
             }else{
                 fprintf(listing,"ram[%d] = {6'b%s, 5'd0, 5'd%d, 16'd0};",codeLine->lineno,

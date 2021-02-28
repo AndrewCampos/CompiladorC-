@@ -378,8 +378,6 @@ static void genExp(TreeNode *tree){
   case VarParamK:
     if (TraceCode)
       emitComment("-> Param");
-    /*memLoc = getMemLoc(tree->attr.name,var_escopo);
-    addr1 = addr_createIntConst(memLoc);*/
     quad_insert(opARG, addr_createString(tree->attr.name, var_escopo), empty, addr_createString(var_escopo,var_escopo));
     if (TraceCode)
       emitComment("<- Param");
@@ -388,15 +386,13 @@ static void genExp(TreeNode *tree){
   case VetParamK:
     if (TraceCode)
       emitComment("-> Param");
-    /*memLoc = getMemLoc(tree->attr.name,var_escopo);
-    addr1 = addr_createIntConst(memLoc);*/
     quad_insert(opARG, addr_createString(tree->attr.name, var_escopo), empty, addr_createString(var_escopo,var_escopo));
     if (TraceCode)
       emitComment("<- Param");
     break;
 
   case VarDeclK:
-    memLoc = getMemLoc(tree->attr.name,var_escopo);
+    memLoc = getMemLoc(tree->attr.name,var_escopo) + iniDataMem;
     if (TraceCode)
       emitComment("-> Var ");
     
