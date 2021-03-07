@@ -15,7 +15,7 @@ const char * regNames[] = { "$zero", "$r1", "$r2", "$r3", "$r4", "$r5", "$r6", "
 AssemblyCode codehead = NULL;
 FunList funlisthead = NULL;
 
-int line = 0;
+int line;
 int nscopes = 0;
 int curparam = 0;
 int curarg = 0;
@@ -507,6 +507,7 @@ void printAssembly () {
 
 /* Função inicial da geração de código assembly */
 void generateAssembly (QuadList head) {
+    line = init_code;
     initCode(head);
     createInstructions(head);
     if(PrintCode)

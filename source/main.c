@@ -24,6 +24,7 @@
 
 extern int check_return;
 int lineno = 1;
+int init_code;
 FILE * source;
 FILE * listing;
 
@@ -40,14 +41,18 @@ int main( int argc, char * argv[] ) {
   char pgm[120]; /* nome do arquivo do código fonte */
   char path[120];
 
-  if (argc < 2) {
-    fprintf(stderr,N_VERM"Arquivo não especificado.\nUso: %s <nome do arquivo>\n"RESET,argv[0]);
+  if (argc < 3) {
+    fprintf(stderr,N_VERM"Arquivo não especificado.\nUso: %s <nome do arquivo> <flag>\n"RESET,argv[0]);
     exit(-1);
   }
-  if(argc == 3){
-    if(strcmp(argv[2],"-so") == 0) SO = TRUE;
-    else SO = FALSE;
-  }else SO = FALSE;
+  
+  if(strcmp(argv[2],"-so") == 0){
+    init_code = 0;
+    SO = TRUE;
+  }else{
+    init_code = atoi(argv[2]);
+    SO = FALSE;
+  }
   
   strcpy(path,"codigos/");
   strcpy(pgm,argv[1]) ;

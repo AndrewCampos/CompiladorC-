@@ -1,0 +1,82 @@
+int current;
+int mode;
+int processA;
+int processB;
+int dataA;
+int dataB
+
+int end(void){
+    int address;
+    int mem;
+    int i;
+
+    if(mode == 2) sysWake();
+    mode = 2;
+
+    if(current == 1) current = 2;
+    else current = 1;
+
+    mem = stack[current];
+    while(address != 0){
+        loadStack(mem);
+        mem = mem + 1;
+        i = i + 1;
+        address = mem;
+    }
+
+    loadStack(instruction[current]);
+    return 0;
+}
+
+void switch(void){
+    int i;
+    int mem;
+    int val;
+    int address;
+
+    if(mode == 1){
+
+        if(current = 1)
+            dataA = $lp;
+        else
+            dataB = $lp;
+
+        $lp = 200; (?)
+
+        mem = current * 200; (?)
+        i = 0;
+        while(i<10){
+            saveStack(mem);
+            mem = mem + 1;
+            i = i + 1;
+        }
+
+        if(current == 1)
+            current = 2;
+        else
+            current = 1;
+
+        mem = current * 200 + 10;
+        i = 0;
+        while(i<10){
+            if(lw(mem) != 0){
+                loadStack(lw(mem));
+            }
+        }
+
+        if(current == 1)
+            $lp = dataA;
+        else
+            $lp = dataB;
+        
+    }
+
+    return;
+}
+
+void main(void){
+    current = 1;
+    mode = input();
+    loadStack(processA);
+    return;
+}
