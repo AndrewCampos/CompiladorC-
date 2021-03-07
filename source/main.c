@@ -96,13 +96,13 @@ int main( int argc, char * argv[] ) {
   // Cria os arquivos de compilação
   if(CreateFiles) makeFiles();
   else{
-    FILE *assembly, *temp;
+    FILE *binary, *temp;
     temp = listing;
-    assembly = fopen(assCode,"w");
-    listing = assembly;
-    printAssembly();
+    binary = fopen(binCode,"w");
+    listing = binary;
+    generateBinary();
     listing = temp;
-    fclose(assembly);
+    fclose(binary);
   }
 
 

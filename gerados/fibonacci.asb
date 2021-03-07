@@ -1,5 +1,5 @@
 addi $lp $zero 461;
-jmp 44;
+jmp 43;
 //fibonacci
 str $p1 $lp 1;
 ldr $r1 $lp 1;
@@ -30,7 +30,6 @@ jal 2;
 subi $lp $lp 3;
 mov $r9 $ret 0;
 str $r9 $lp 2;
-ctso;
 ldr $r13 $lp 3;
 ldr $r14 $lp 1;
 put $r15 1;
@@ -54,14 +53,14 @@ mov $zero $ret 0;
 str $zero $lp 1;
 ldr $r1 $lp 1;
 put $r2 0;
-bne $r1 $r2 58;
+bne $r1 $r2 57;
 put $r4 100000;
 mov $p1 $r4 0;
 out $p1;
 put $r5 0;
 mov $ret $r5 0;
-jmp 69;
-jmp 58;
+jmp 68;
+jmp 57;
 //L4
 //L5
 ldr $r6 $lp 1;
@@ -73,7 +72,7 @@ mov $p1 $ret 0;
 out $p1;
 put $r7 0;
 mov $ret $r7 0;
-jmp 69;
-jmp 69;
+jmp 68;
+jmp 68;
 //end
 hlt;

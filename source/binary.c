@@ -74,7 +74,7 @@ void assembly2binary(AssemblyCode codeLine){
             }
             break;
         case formatSYS:
-            if(inst.opcode == hlt || inst.opcode == sleep || inst.opcode == wake || inst.opcode == lstk || inst.opcode == sstk){
+            if(inst.opcode == hlt || inst.opcode == sleep || inst.opcode == wake){
                 fprintf(listing,"ram[%d] = {6'b%s, 26'd0};",codeLine->lineno,
                                                            opcodeBins[inst.opcode]);
                 fprintf(listing,"   // %s\n",Prefixos[inst.opcode]);

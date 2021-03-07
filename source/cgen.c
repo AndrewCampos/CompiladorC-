@@ -99,7 +99,7 @@ char *newLabel(){
 char *newTemp(){
   char *temp = (char *)malloc((ntemp_size + 3) * sizeof(char));
   sprintf(temp, "$r%d", ntemp);
-  ntemp = (ntemp % nregtemp)+1;
+  ntemp = (ntemp % (nregtemp-1))+1;
   return temp;
 }
 

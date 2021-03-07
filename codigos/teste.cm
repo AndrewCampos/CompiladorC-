@@ -1,0 +1,17 @@
+void nada(void){
+    int i;
+    i = i+i+i+i+i+i+i;
+}
+
+void main(void){
+    int i;
+    int mem;
+
+    mem = 100;
+    i = 0;
+    while(i<10){
+        saveStack(mem);
+        i = i + 1;
+        mem = mem + 1;
+    }
+}
