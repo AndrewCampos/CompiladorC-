@@ -84,5 +84,7 @@ Respectivamente, as _flags_ representam a impressão no terminal dos _tokens_ l�
 
 ## Resultado
 
-O compilador já está em sua fase final de testes (inclusive com testes integrados ao processador referente) e consegue fazer todo o processo de tradução de forma satisfatória. Porem apesar já estar com sua funcionalidade completa ainda existem alguns erros encontrados durante os testes que precisam ser refinados, sendo eles:
-- Ao conter variáveis e chamadas de funções em uma atribuição a ordem dos _loads_ podem impedir a recursão
+O compilador já está em sua fase final de testes (inclusive com testes integrados ao processador referente) e consegue fazer todo o processo de tradução de forma satisfatória. Porém, apesar já estar com sua funcionalidade completa, ainda existem alguns erros encontrados durante os testes que precisam ser refinados, sendo eles:
+- Ao conter variáveis e chamadas de funções em uma atribuição a ordem dos _loads_ podem impedir a recursão;
+- Passagem de vetor local como parâmetro retorna erro semântico;
+- Vetor passado como parâmetro duas vezes recebe o endereço errado.
