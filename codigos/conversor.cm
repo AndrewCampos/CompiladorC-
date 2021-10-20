@@ -1,23 +1,23 @@
-void converteDolar(int val){
+void converteDolar(int val) {
     int result;
     result = val * 512;
     output(result);
 }
 
-void converteReal(int val){
+void converteReal(int val) {
     int result;
     result = val * 17;
     output(result);
 }
 
-int main(void){
+int main(void) {
     int op;
     int valor;
     op = input();
     valor = input();
-    if(op == 1){
+    if(op == 1) {
         converteDolar(valor);
-    }else{
+    } else {
         converteReal(valor);
     }
     return 0;

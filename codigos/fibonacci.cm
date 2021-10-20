@@ -1,19 +1,19 @@
 int in;
 
-int fibonacci(int num){
+int fibonacci(int num) {
     int prim;
     int sec;
     if(num == 1) return 0;
     if(num == 2) return 1;
     prim = fibonacci(num-2);
     sec = fibonacci(num-1);
-    return prim+sec;
+    return prim + sec;
 }
 
-int main(void){
+int main(void) {
 
     in = input();
-    if(in == 0){
+    if(in == 0) {
         output(100000);
         return 0;
     }
