@@ -1,11 +1,8 @@
 #include "globals.h"
 
-/* Flag com valor TRUE impede a análise sintática */
-#define NO_PARSE FALSE
-/* Flag com valor TRUE impede a análise semântica */
-#define NO_ANALYZE FALSE
-/* Flag com valor TRUE impede a geração de código intermediário */
-#define NO_CODE FALSE
+#define NO_PARSE FALSE // Flag com valor TRUE impede a análise sintática
+#define NO_ANALYZE FALSE // Flag com valor TRUE impede a análise semântica
+#define NO_CODE FALSE // Flag com valor TRUE impede a geração de código intermediário
 
 #include "util.h"
 #if NO_PARSE
@@ -28,14 +25,14 @@ int init_code;
 FILE *source;
 FILE *listing;
 
-FlagType TraceScan = FALSE;    // Imprimir tokens
-FlagType TraceParse = FALSE;   // Imprimir árvore sintática
-FlagType TraceAnalyze = FALSE; // Imprimir tabela de simbolos
-FlagType TraceCode = FALSE;    // Imprimir nós da geração de código
-FlagType PrintCode = FALSE;    // Imprimir os códigos gerados
+FlagType TraceScan = FALSE;
+FlagType TraceParse = FALSE;
+FlagType TraceAnalyze = FALSE;
+FlagType TraceCode = FALSE;
+FlagType PrintCode = FALSE;
 FlagType CreateFiles = FALSE;  // Criar arquivos de compilação
-FlagType Error = FALSE;        // Flag que marca a existência de erros
-FlagType SO;                   // Indica se a compilação é de um SO
+FlagType Error = FALSE;
+FlagType SO;
 
 /**
  * Verifica se o compilador está analisando um código do sistema operacional.
@@ -140,30 +137,26 @@ void doAnalize() {
 }
 
 /**
- * Executa a etapa de síntese da compilação
+ * Executa a etapa de síntese da compilação e gera os arquivos com o resultado de todas as etapas.
  */
 void doCodeGen() {
     if (TraceCode) {
         fprintf(listing, AZ "Criando código intermediário...\n" RESET);
     }
 
-    // GERADOR DE CÓD. INTERMED.
     codeGen(syntaxTree);
-    // GERADOR DE CÓD. ASSEMBLY 
     generateAssembly(getIntermediate());
 
     if (!PrintCode) {
         listing = NULL;
     }
 
-    // GERADOR DE CÓD. BINÁRIO
     generateBinary();
     listing = stdout;
     fprintf(listing, N_VERD "Compilação concluida com sucesso!\n\n" RESET);
 
-    // Cria os arquivos de compilação
     if (CreateFiles) {
-        makeFiles();
+        criaArquivos();
     } else {
         FILE *binary, *temp;
         temp = listing;
@@ -176,14 +169,11 @@ void doCodeGen() {
 }
 
 int main(int argc, char *argv[]) {
-    // Nome do arquivo do código fonte
     char pgm[120];
-    // Caminho do arquivo no 
     char path[120];
 
     validateCallInputs(argc, argv);
     formatFilePath(path, pgm, argv[1]);
-    // Define listning como a saída no terminal
     listing = stdout; 
     fprintf(listing, N_BRC "\nCOMPILAÇÃO DO ARQUIVO C-\n" RESET);
     fprintf(listing, "Fonte: " VERD "./%s\n" RESET, path);
