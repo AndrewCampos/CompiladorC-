@@ -63,7 +63,7 @@ int isSystemCompilation(int argc, char *argv[]) {
  */
 void validateCallInputs(int argc, char *argv[]) {
     if (argc < 3) {
-        fprintf(stderr, N_VERM "Arquivo não especificado.\nUso: %s <nome do arquivo> <flag>\n" RESET, argv[0]);
+        printError("Arquivo não especificado.\nUso: ./compilador <nome do arquivo> <flag>", Beginning, 0);
         exit(-1);
     }
 
@@ -96,7 +96,7 @@ void formatFilePath(char *path, char *pgm, char *argv) {
     source = fopen(path, "r");
 
     if (source == NULL) {
-        fprintf(stderr, N_VERM "Arquivo %s não encontrado.\n" RESET, path);
+        printError("Arquivo não encontrado.", Beginning, 0);
         exit(-1);
     }
 }
@@ -107,31 +107,27 @@ void formatFilePath(char *path, char *pgm, char *argv) {
 void doParse() {
     syntaxTree = parse();
     if (Error == TRUE) {
-        printf(N_VERM "Impossível concluir a compilação!\n\n");
+        printError("Impossível concluir a compilação!\n", CodeGen, 0);
         exit(-1);
     }
+
+    printSucess("Análise léxica concluída.", HeaderOnly);
+
     if (TraceParse) {
-        fprintf(listing, N_AZ "Árvore Sintática:\n" RESET);
+        printf(N_AZ "Árvore Sintática:\n" RESET);
         printTree(syntaxTree);
     }
+    printSucess("Árvore sintática construída.", HeaderOnly);
 }
 
 /**
  * Executa a etapa análise semântica da compilação.
  */
 void doAnalize() {
-    if (TraceAnalyze) {
-        fprintf(listing, AZ "Construindo Tabela de Simbolos...\n" RESET);
-    }
-
     buildSymtab(syntaxTree);
 
-    if (TraceAnalyze) {
-        fprintf(listing, N_VERD "\nAnálise Concluida!\n" RESET);
-    }
-
     if (Error) {
-        printf(N_VERM "Impossível concluir a compilação!\n\n");
+        printError("Impossível concluir a compilação!\n", CodeGen, 0);
         exit(-1);
     }
 }
@@ -140,23 +136,21 @@ void doAnalize() {
  * Executa a etapa de síntese da compilação e gera os arquivos com o resultado de todas as etapas.
  */
 void doCodeGen() {
-    if (TraceCode) {
-        fprintf(listing, AZ "Criando código intermediário...\n" RESET);
-    }
-
     codeGen(syntaxTree);
+    printSucess("Código intermediário criado.", HeaderOnly);
     generateAssembly(getIntermediate());
+    printSucess("Código assembly criado.", HeaderOnly);
 
     if (!PrintCode) {
         listing = NULL;
     }
 
     generateBinary();
+    printSucess("Código binário criado.", HeaderOnly);
     listing = stdout;
-    fprintf(listing, N_VERD "Compilação concluida com sucesso!\n\n" RESET);
 
     if (CreateFiles) {
-        criaArquivos();
+        makeFiles();
     } else {
         FILE *binary, *temp;
         temp = listing;
@@ -165,6 +159,7 @@ void doCodeGen() {
         generateBinary();
         listing = temp;
         fclose(binary);
+        printWarning("Não foram criados arquivos dos processos intermediários.", 0);
     }
 }
 
@@ -175,21 +170,25 @@ int main(int argc, char *argv[]) {
     validateCallInputs(argc, argv);
     formatFilePath(path, pgm, argv[1]);
     listing = stdout; 
-    fprintf(listing, N_BRC "\nCOMPILAÇÃO DO ARQUIVO C-\n" RESET);
-    fprintf(listing, "Fonte: " VERD "./%s\n" RESET, path);
-    nomeiaArquivos(pgm);
+    printf(N_BRC "\nCOMPILAÇÃO DO ARQUIVO C-\n" RESET "Fonte: " VERD "./%s\n" RESET, path);
+    nameFiles(pgm);
 
 #if NO_PARSE
     while (getToken() != ENDFILE);
+    printSucess("Análise léxica concluída.", HeaderOnly);
+    printWarning("Não foram feitas as demais etapas da compilação.", 0)
+
 
 #else
     doParse();
 
 #if !NO_ANALYZE
     doAnalize();
+    printSucess("Etapa de análise concluída.", HeaderOnly);
 
 #if !NO_CODE
     doCodeGen();
+    printSucess("Compilação concluida com sucesso!\n", FullMessage);
 
 #endif
 #endif

@@ -140,19 +140,27 @@ TreeNode *newExpNode(ExpKind kind) {
 }
 
 char *copyString(char *string) {
-    int n;
-    char *t;
+    char *copy;
+
     if (string == NULL) {
         return NULL;
     }
-    n = strlen(string) + 1;
-    t = malloc(n);
-    if (t == NULL) {
-        fprintf(listing, "Out of memory error at line %d\n", lineno);
+    
+    copy = malloc(strlen(string) + 1);
+
+    if (copy == NULL) {
+        printError("Erro na alocação da string.", CodeGen, lineno);
     } else {
-        strcpy(t, string);
+        strcpy(copy, string);
     }
-    return t;
+
+    return copy;
+}
+
+char *composeString(char *string1, char *string2) {
+    char *newString = malloc(strlen(string1) + 1);
+    sprintf(newString, string1, string2);
+    return newString;
 }
 
 /**
@@ -240,7 +248,7 @@ void printTree(TreeNode *tree) {
     UNINDENT;
 }
 
-void nomeiaArquivos(char *nome) {
+void nameFiles(char *nome) {
     int fnlen = strcspn(nome, ".");
     // Aloca espaços para nomes
     ArvSint = (char *)calloc(8 + fnlen + 5, sizeof(char));
@@ -268,7 +276,7 @@ void nomeiaArquivos(char *nome) {
     strcat(binCode, ".bin");
 }
 
-void criaArquivos() {
+void makeFiles() {
     int i;
     FILE *arvore, *tabela, *intermed, *temp, *assembly, *binary;
     arvore = fopen(ArvSint, "w");
@@ -293,4 +301,39 @@ void criaArquivos() {
     fclose(intermed);
     fclose(assembly);
     fclose(binary);
+}
+
+void printError(char *message, CompilationStep step, int line) {
+    char *stepString[] = {"Léxico", "Sintático", "Semântico"};
+
+    if (step < 3) {
+        printf(N_VERM "[ERRO]    " RESET "Erro %s: %s (%d)\n", stepString[step], message, line);
+    } else  if (step == Beginning) {
+        printf(N_VERM "%s\n" RESET, message);
+    } else {
+        printf(N_VERM "[ERRO]    " RESET  "%s\n", message);
+    }
+}
+
+void printWarning(char *message, int line) {
+    if (line > 0) {
+        printf(N_AMAR "[AVISO]   " RESET "%s (%d)\n", message, line);
+    } else {
+        printf(N_AMAR "[AVISO]   " RESET "%s\n", message);
+    }
+}
+
+void printSucess(char *message, PrintFlag flag) {
+    switch (flag) {
+    case FullMessage:
+        printf(N_VERD "%s\n" RESET, message);
+        break;
+    
+    case HeaderOnly:
+        printf(N_VERD "[SUCESSO] " RESET "%s\n", message);
+        break;
+
+    default:
+        break;
+    }
 }

@@ -16,7 +16,7 @@ void printToken( TokenType, const char* );
  * Parâmetros:
  * - kind: Tipo do novo nó.
  */
-TreeNode * newStmtNode(StmtKind);
+TreeNode *newStmtNode(StmtKind);
 
 /**
  * Cria um novo nó de expressão para a construção da árvore sintática.
@@ -24,7 +24,7 @@ TreeNode * newStmtNode(StmtKind);
  * Parâmetros:
  * - kind: Tipo do novo nó.
  */
-TreeNode * newExpNode(ExpKind);
+TreeNode *newExpNode(ExpKind);
 
 /**
  * Aloca e faz uma nova cópia de uma string existente.
@@ -32,7 +32,19 @@ TreeNode * newExpNode(ExpKind);
  * Parâmetros:
  * - string: String a ser copiada.
  */
-char * copyString( char * );
+char *copyString( char * );
+
+/**
+ * Insere uma string em outra nos locais indicados.
+ * 
+ * Parâmetros:
+ * - string1: String a ser complementada.
+ * - string2: String a ser inserida
+ * 
+ * Retorna:
+ * String resultante da mesclagem das strings.
+ */
+char *composeString(char *, char *);
 
 /**
  * O procedimento printTree printa uma árvore sintática para o arquivo de listagem usando identação para indicar
@@ -50,11 +62,39 @@ void printTree( TreeNode * );
  * Parâmetros:
  * - nome: Nome do arquivo compilado.
  */
-void nomeiaArquivos(char *nome);
+void nameFiles(char *);
 
 /**
  * Abre os arquivos gerados pela compilação e os popula com as funções de impressão de cada parte módulo do compilador.
  */
-void criaArquivos();
+void makeFiles();
+
+/**
+ * Imprime uma mensagem de erro formatada.
+ * 
+ * Parâmetros:
+ * - message: Mensagem a ser apresentada.
+ * - step: Etapa da compilação que se encontra o erro.
+ * - line: Linha do código (se existir) que se encontra o erro.
+ */
+void printError(char *, CompilationStep, int );
+
+/**
+ * Imprime uma mensagem de aviso formatada.
+ * 
+ * Parâmetros:
+ * - message: Mensagem a ser apresentada.
+ * - line: Linha do código (se existir) que se encontra o aviso.
+ */
+void printWarning(char *, int);
+
+/**
+ * Imprime uma mensagem de sucesso formatada.
+ * 
+ * Parâmetros:
+ * - message: Mensagem a ser apresentada.
+ * - flag: Indicador que controla o formato da mensagem.
+ */
+void printSucess(char *, PrintFlag);
 
 #endif

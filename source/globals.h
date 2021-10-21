@@ -68,6 +68,22 @@ extern int lineno;    // Número da linha atual da compulação
 extern int init_code; // Posicao inicial da primeira instrucao
 
 /**
+ * Etapas da fase de compilação
+ */
+typedef enum {
+    Lexicon,
+    Syntactic,
+    Semantics,
+    CodeGen,
+    Beginning
+} CompilationStep;
+
+typedef enum {
+    FullMessage,
+    HeaderOnly
+} PrintFlag;
+
+/**
  * Tipo do nó da árvore sintática.
  */
 typedef enum {

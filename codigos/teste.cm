@@ -1,0 +1,9 @@
+int function(int a) {
+    return 0;
+}
+
+int main(void) {
+    int i;
+    i = function(1,2);
+    return 0;
+}
