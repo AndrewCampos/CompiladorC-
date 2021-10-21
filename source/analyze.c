@@ -23,7 +23,7 @@ void UpdateScope(TreeNode *t) {
 }
 
 /**
- * Função recursiva de percorrimento da árvore sintática.
+ * Percorre a árvore sintática recursivamente tanto em pré quanto em pós ordem.
  * 
  * Parâmetros:
  * - t: Nó atual da árvore sintática a ser analisado.
