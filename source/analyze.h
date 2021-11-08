@@ -27,7 +27,7 @@ void buildSymtab(TreeNode*);
 void typeCheck(TreeNode*);
 
 /**
- * Faz a checagem de tipos para o nó referenciado.
+ * Chama checagens de tipo para cada nó da árvore sintática.
  * 
  * Parâmetros:
  * - t: Nó atual da árvore sintática a ser analisado.

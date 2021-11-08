@@ -8,11 +8,12 @@
 
 static int location = iniDataMem; // Contador para alocação de endereços de memória.
 char *escopo = "global"; // Escopo atual da análise.
-int check_return = FALSE;
+FlagType check_return = FALSE;
 
 void UpdateScope(TreeNode *t) {
     if (t != NULL && t->kind.exp == FunDeclK) {
         escopo = t->attr.name;
+        
         if (getFunType(escopo) == INTTYPE && check_return == TRUE) {
             if (checkReturn(escopo) == -1) {
                 printError(composeString("Retorno da função %s inexistente.",t->attr.name), Semantics, t->lineno);
@@ -36,8 +37,9 @@ static void traverse(TreeNode *t, void (*preProc)(TreeNode *), void (*postProc)(
         preProc(t);
         {
             int i;
-            for (i = 0; i < MAXCHILDREN; i++)
+            for (i = 0; i < MAXCHILDREN; i++) {
                 traverse(t->child[i], preProc, postProc);
+            }
         }
         if (t->child[0] != NULL && t->kind.exp == FunDeclK) {
             escopo = "global";
@@ -54,11 +56,7 @@ static void traverse(TreeNode *t, void (*preProc)(TreeNode *), void (*postProc)(
  * - t: Nó atual da árvore sintática a ser analisado.
  */
 static void nullProc(TreeNode *t) {
-    if (t == NULL) {
-        return;
-    } else {
-        return;
-    }
+    return;
 }
 
 /**
@@ -118,9 +116,10 @@ static void insertNode(TreeNode *t) {
         switch (t->kind.exp) {
         case VarDeclK:
             st_insert(t->attr.name, t->lineno, location++, escopo, INTTYPE, TIPO, VAR, t->vet);
-            if (st_lookup(t->attr.name, escopo) == -1)
-                /* não encontrado na tabela, inserir*/
+
+            if (st_lookup(t->attr.name, escopo) == -1) {
                 st_insert(t->attr.name, t->lineno, location++, escopo, INTTYPE, TIPO, VAR, t->vet);
+            }
             break;
 
         case VetorK:
@@ -130,17 +129,16 @@ static void insertNode(TreeNode *t) {
 
         case FunDeclK:
             location = 1;
+
             if (strcmp(t->child[1]->attr.name, "VOID") == 0) {
                 TIPO = VOIDTYPE;
             } else {
                 TIPO = INTTYPE;
             }
-
             if (st_lookup(t->attr.name, escopo) == -1) {
-                /* não encontrado na tabela, inserir*/
                 st_insert(t->attr.name, t->lineno, INDIF, "global", t->type, TIPO, FUN, t->vet);
+
             } else {
-                /* encontrado na tabela, erro semântico */
                 printError(composeString("Múltiplas declarações da função \"%s\".", t->attr.name), Semantics, t->lineno);
                 Error = TRUE;
             }
@@ -156,9 +154,11 @@ static void insertNode(TreeNode *t) {
 
         case IdK:
             if (t->add != 1) {
+
                 if (st_lookup(t->attr.name, escopo) == -1) {
                     printError(composeString("A variável \"%s\" não foi declarada.", t->attr.name), Semantics, t->lineno);
                     Error = TRUE;
+ 
                 } else {
                     if (t->child[0] != NULL) {
                         st_insert(t->attr.name, t->lineno, 0, escopo, INTTYPE, TIPO, VET, t->vet);
@@ -173,9 +173,11 @@ static void insertNode(TreeNode *t) {
             if (st_lookup(t->attr.name, escopo) == -1 && !isReservedFunction(t)) {
                 printError(composeString("A função \"%s\" não foi declarada.", t->attr.name), Semantics, t->lineno);
                 Error = TRUE;
+
             } else {
                 if (t->params == getNumParam(t->attr.name) || isReservedFunction(t)) {
                     st_insert(t->attr.name, t->lineno, INDIF, escopo, getFunType(t->attr.name), TIPO, CALL, t->vet);
+
                 } else {
                     printError(composeString("Número de parâmetros para a função \"%s\" incompatível.", t->attr.name),
                         Semantics, t->lineno);
@@ -202,7 +204,6 @@ void buildSymtab(TreeNode *syntaxTree) {
     if (TraceAnalyze) {
         printf(AZ "Checando Tipos...\n" RESET);
     }
-
     check_return = TRUE;
     typeCheck(syntaxTree);
 

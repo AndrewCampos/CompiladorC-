@@ -1,0 +1,8 @@
+*.o
+*.tree
+*.tab
+*.itm
+*.asb
+lex.yy.c
+Parser.tab*
+compilador
