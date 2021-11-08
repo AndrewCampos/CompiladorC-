@@ -106,17 +106,17 @@ typedef enum {
  * Tipo de expressão do nó.
  */
 typedef enum {
-    OpK,
-    ConstK,
-    IdK,
-    VarDeclK,
-    VetDeclK,
-    FunDeclK,
-    AtivK,
-    TypeK,
-    VetorK,
-    VarParamK,
-    VetParamK
+    OpK, // Operando.
+    ConstK, // Valor numérico constante.
+    IdK, // Uso de variável.
+    VarDeclK, // Declaração de variável.
+    VetDeclK, // Declaração de vetor.
+    FunDeclK, // Declaração de função.
+    AtivK, // Chamada de função.
+    TypeK, // Palavra reservada de tipo.
+    VetorK, // Uso de parâmetro vetor.
+    VarParamK, // Declaração de variável parâmetro.
+    VetParamK // Declaração de vetro parâmetro.
 } ExpKind;
 
 /** 
