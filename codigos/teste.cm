@@ -1,9 +1,27 @@
-int function(int a) {
-    return 0;
+void savePC(void) {
+    int a;
+    int b;
+    input();
+    a = saveStack();
+    store(300, a);
+    b = load(300);
+    output(b);
+    loadStack(b);
+}
+
+void printPC(void) {
+    int a;
+    int b;
+    input();
+    a = 100;
+    saveStack(a);
+    b = load(a);
+    output(b);
+    loadStack(b);
+    savePC();
 }
 
 int main(void) {
-    int i;
-    i = function(1,2);
+    printPC();
     return 0;
 }
