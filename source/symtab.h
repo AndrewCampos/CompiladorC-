@@ -3,13 +3,12 @@
 
 #include "globals.h"
 
-/* SIZE é o tamanho da tabela hash */
-#define SIZE 211
+#define SIZE 211 // Tamanho da tabela hash.
+#define SHIFT 4 // Potência de 2 usada como multiplicador da função hash.
 
-/* SHIFT é a potência de 2 usada como multiplicador da função hash */
-#define SHIFT 4
-
-/* a lista de números de linha do código fonte no qual uma variável é referenciada */
+/** 
+ * Lista de números de linha do código fonte no qual uma variável é referenciada.
+ */
 typedef struct LineListRec { 
   int lineno;
   struct LineListRec * next;
@@ -25,20 +24,26 @@ typedef struct BucketListRec {
   IDTypes IType;
   char* escopo;
   LineList lines;
-  int memloc ; /* posição da memória para variável */
+  int memloc ; // Posição da memória para variável.
   int vet;
   int tam;
   struct BucketListRec * next;
 } * BucketList;
 
-/* A tabela Hash */
+/**
+ * A tabela Hash
+ */
 static BucketList hashTable[SIZE];
 
-/* Procedure st_insert inserts line numbers and memory locations into the symbol table
- loc = memory location is inserted only the first time, otherwise ignored */
+/**
+ * @brief Procedure st_insert inserts line numbers and memory locations into the symbol table loc = memory location is inserte
+ * only the first time, otherwise ignored.
+ */
  void st_insert( char * name, int lineno, int op, char* escopo, dataTypes RetType, dataTypes StmtType, IDTypes IType, int vet);
 
-/* Função st_lookup retorna a posição da memória de uma variável ou -1 se não encontrar */
+/** 
+ * @brief Função st_lookup retorna a posição da memória de uma variável ou -1 se não encontrar
+ */
 int st_lookup ( char * name, char * escopo);
 
 /*Função para verificar se o retorno da função tipo INT está presente*/

@@ -47,9 +47,19 @@ typedef struct FunListRec {
     struct FunListRec * next;
 } * FunList;
 
-void generateAssembly (QuadList head);
+/**
+ * @brief Gera código lista com as instruções do código assembly.
+ * 
+ * @param head Topo da lista de instruções
+ */
+void generateAssembly(QuadList head);
 
-AssemblyCode getAssembly ();
+/**
+ * @brief Get the Assembly object
+ * 
+ * @return AssemblyCode 
+ */
+AssemblyCode getAssembly();
 
 void printAssembly ();
 

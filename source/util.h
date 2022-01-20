@@ -97,4 +97,13 @@ void printWarning(char *, int);
  */
 void printSucess(char *, PrintFlag);
 
+    /**
+ * @brief Confere se o nó se trata de uma função reservada do sistema.
+ * 
+ * @param t: Nó atual da árvore sintática a ser analisado.
+ * 
+ * @return 1 caso seja uma função reservada, 0 caso contrário.
+ */
+int isReservedFunction(TreeNode *t);
+
 #endif

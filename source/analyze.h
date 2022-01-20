@@ -3,34 +3,30 @@
 #include "globals.h"
 
 /**
- * Atualiza o escopo atual da compilação.
+ * @brief Atualiza o escopo atual da compilação.
  * 
- * Parâmetros:
- * - t: Nó atual da árvore sintática a ser analisado.
+ * @param t: Nó atual da árvore sintática a ser analisado.
  */
 void UpdateScope(TreeNode * t);
 
 /**
- * Constrói a tabela de símbolos pela passagem de pré-ordem da árvore sintática.
+ * @brief Constrói a tabela de símbolos pela passagem de pré-ordem da árvore sintática.
  * 
- * Parâmetros:
- * - t: Nó atual da árvore sintática a ser analisado.
+ * @param t: Nó atual da árvore sintática a ser analisado.
  */
 void buildSymtab(TreeNode*);
 
 /**
- * Percorre a árvore sintática em pós-ordem para fazer a checagem de tipos.
+ * @brief Percorre a árvore sintática em pós-ordem para fazer a checagem de tipos.
  * 
- * Parâmetros:
- * - t: Nó atual da árvore sintática a ser analisado.
+ * @param t: Nó atual da árvore sintática a ser analisado.
  */
 void typeCheck(TreeNode*);
 
 /**
- * Chama checagens de tipo para cada nó da árvore sintática.
+ * @brief Chama checagens de tipo para cada nó da árvore sintática.
  * 
- * Parâmetros:
- * - t: Nó atual da árvore sintática a ser analisado.
+ * @param t: Nó atual da árvore sintática a ser analisado.
  */
 void checkNode(TreeNode*);
 

@@ -1,12 +1,3 @@
-/****************************************************/
-/* File: cgen.c                                     */
-/* The code generator implementation                */
-/* for the C- compiler                              */
-/* Adapted from:                                    */
-/* Compiler Construction: Principles and Practice   */
-/* Kenneth C. Louden                                */
-/****************************************************/
-
 #include "globals.h"
 #include "symtab.h"
 #include "cgen.h"

@@ -30,19 +30,17 @@ FlagType TraceParse = FALSE;
 FlagType TraceAnalyze = FALSE;
 FlagType TraceCode = FALSE;
 FlagType PrintCode = FALSE;
-FlagType CreateFiles = FALSE;  // Criar arquivos de compilação
+FlagType CreateFiles = FALSE; // Criar arquivos de compilação
 FlagType Error = FALSE;
 FlagType SO;
 
 /**
- * Verifica se o compilador está analisando um código do sistema operacional.
+ * @brief Verifica se o compilador está analisando um código do sistema operacional.
  * 
- * Parâmetros:
- * - argc: Parâmetro argc da chamada do programa.
- * - argv: Parâmetro argv da chamada do programa.
+ * @param argc: Parâmetro argc da chamada do programa.
+ * @param argv: Parâmetro argv da chamada do programa.
  * 
- * Retorna:
- * 1 caso seja uma compilação do sistema operacional, 0 caso contrário.
+ * @return 1 caso seja uma compilação do sistema operacional, 0 caso contrário.
  */
 int isSystemCompilation(int argc, char *argv[]) {
 
@@ -54,12 +52,11 @@ int isSystemCompilation(int argc, char *argv[]) {
 }
 
 /**
- * Verifica se os argumentos passados na chamada do programa estão de acordo com o padrão
+ * @brief Verifica se os argumentos passados na chamada do programa estão de acordo com o padrão
  * desejado.
  * 
- * Parâmetros:
- * - argc: Parâmetro argc da chamada do programa.
- * - argv: Parâmetro argv da cgamada do programa.
+ * @param argc: Parâmetro argc da chamada do programa.
+ * @param argv: Parâmetro argv da cgamada do programa.
  */
 void validateCallInputs(int argc, char *argv[]) {
     if (argc < 3) {
@@ -77,12 +74,11 @@ void validateCallInputs(int argc, char *argv[]) {
 }
 
 /**
- * Cria a string que contém o caminho para o arquivo fonte à ser compilado.
+ * @brief Cria a string que contém o caminho para o arquivo fonte à ser compilado.
  * 
- * Parâmetros:
- * - path: String que recebe o caminho do arquivo
- * - pgm: String recebe o nome do arquivo
- * - argv: Parâmetro argv[1] da chamada do programa
+ * @param path: String que recebe o caminho do arquivo
+ * @param pgm: String recebe o nome do arquivo
+ * @param argv: Parâmetro argv[1] da chamada do programa
  */
 void formatFilePath(char *path, char *pgm, char *argv) {
     strcpy(path, "codigos/");
@@ -102,7 +98,7 @@ void formatFilePath(char *path, char *pgm, char *argv) {
 }
 
 /**
- * Executa as etapas de análise léxica e sintática da compilação.
+ * @brief Executa as etapas de análise léxica e sintática da compilação.
  */
 void doParse() {
     syntaxTree = parse();
@@ -121,7 +117,7 @@ void doParse() {
 }
 
 /**
- * Executa a etapa análise semântica da compilação.
+ * @brief Executa a etapa análise semântica da compilação.
  */
 void doAnalize() {
     buildSymtab(syntaxTree);
@@ -133,7 +129,7 @@ void doAnalize() {
 }
 
 /**
- * Executa a etapa de síntese da compilação e gera os arquivos com o resultado de todas as etapas.
+ * @brief Executa a etapa de síntese da compilação e gera os arquivos com o resultado de todas as etapas.
  */
 void doCodeGen() {
     codeGen(syntaxTree);

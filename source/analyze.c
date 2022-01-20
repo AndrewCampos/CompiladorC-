@@ -24,12 +24,11 @@ void UpdateScope(TreeNode *t) {
 }
 
 /**
- * Percorre a árvore sintática recursivamente tanto em pré quanto em pós ordem.
+ * @brief Percorre a árvore sintática recursivamente tanto em pré quanto em pós ordem.
  * 
- * Parâmetros:
- * - t: Nó atual da árvore sintática a ser analisado.
- * - preProc: Ponteiro para função de percorrimento em pré-ordem.
- * - postProc: Ponteiro para função de percorrimento em pós-ordem.
+ * @param t: Nó atual da árvore sintática a ser analisado.
+ * @param preProc: Ponteiro para função de percorrimento em pré-ordem.
+ * @param postProc: Ponteiro para função de percorrimento em pós-ordem.
  */
 static void traverse(TreeNode *t, void (*preProc)(TreeNode *), void (*postProc)(TreeNode *)) {
     if (t != NULL) {
@@ -50,10 +49,9 @@ static void traverse(TreeNode *t, void (*preProc)(TreeNode *), void (*postProc)(
 }
 
 /**
- * Procedimento do tipo do-nothing para o percorrimento em pré-ordem ou pós-ordem da árvore.
+ * @brief Procedimento do tipo do-nothing para o percorrimento em pré-ordem ou pós-ordem da árvore.
  *
- * Parâmetros:
- * - t: Nó atual da árvore sintática a ser analisado.
+ * @param t: Nó atual da árvore sintática a ser analisado.
  */
 static void nullProc(TreeNode *t) {
     return;
@@ -77,11 +75,9 @@ int isReservedFunction(TreeNode *t) {
         || (strcmp(t->attr.name, "saveStack") == 0);
 }
 
-/**
- * Insere identificadores armazenados no nó referenciado na tabela de símbolos.
+ * @brief Insere identificadores armazenados no nó referenciado na tabela de símbolos.
  *
- * Parâmetro:
- * - t: Nó atual da árvore sintática a ser analisado. 
+ * @param t: Nó atual da árvore sintática a ser analisado. 
  */
 static void insertNode(TreeNode *t) {
     dataTypes TIPO = NULLL;
@@ -214,26 +210,22 @@ void buildSymtab(TreeNode *syntaxTree) {
 }
 
 /**
- * Checa se não ocorre uma atribuição do retorno de uma função do tipo VOID.
+ * @brief Checa se não ocorre uma atribuição do retorno de uma função do tipo VOID.
  * 
- * Parâmetros:
- * - t: Nó atual da árvore sintática a ser analisado
+ * @param t: Nó atual da árvore sintática a ser analisado
  * 
- * Retorna:
- * 1 Caso exista uma atribuição do retorno tipo VOID, 0 caso contrário.
+ * @return 1 Caso exista uma atribuição do retorno tipo VOID, 0 caso contrário.
  */
 int isInvalidTypes(TreeNode *child) {
     return child->kind.exp == AtivK && getFunType(child->attr.name) == VOIDTYPE;
 }
 
 /**
- * Verifica se o retorno de uma função é compatível com a operação realizada.
+ * @brief Verifica se o retorno de uma função é compatível com a operação realizada.
  * 
- * Parâmetros:
- * - t: Nó atual da árvore sintática a ser analisado
+ * @param t: Nó atual da árvore sintática a ser analisado
  * 
- * Retorna:
- * 1 caso o retorno seja incompatível, 0 caso contrário.
+ * @return 1 caso o retorno seja incompatível, 0 caso contrário.
  */
 int isInvalidReturn(TreeNode *t) {
     TreeNode *child_1 = t->child[1];
