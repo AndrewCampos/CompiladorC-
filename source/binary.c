@@ -6,14 +6,15 @@
 
 #define END_SWITCH 67
 
-const char *Prefixos[] = { "add", "sub", "mult", "div", "and", "or", "nand", "nor", "sle", "slt", "sge", "addi", "subi", "divi", "multi", "andi", "ori",
-                             "nori", "slei", "slti", "beq", "bne", "blt", "bgt", "sti", "ldi", "str", "ldr", "hlt", "in", "out", "jmp", "jal", "jst",
-                             "sleep", "wake", "lstk", "sstk", "mov", "put", "ctso" };
+const char *Prefixos[] = { "add" , "sub" , "mult", "div"  , "and" , "or" , "nand", "nor" , "sle" , "slt", "sge",
+                           "addi", "subi", "divi", "multi", "andi", "ori", "nori", "slei", "slti", "beq", "bne",
+                           "blt" , "bgt" , "sti" , "ldi"  , "str" , "ldr", "hlt" , "in"  , "out" , "jmp", "jal",
+                           "jst" , "lstk", "sstk", "mov"  , "put" , "ctso" };
 
 const char *opcodeBins[] =   {"000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", 
                               "000001", "000010", "000011", "000100", "000101", "000110", "000111", "001000", "001001", "001010", "001011",
                               "001100", "001101", "001110", "001111", "010000", "010001", "010010", "010011", "010100", "010101", "010110",
-                              "010111", "010110", "011010", "011011", "011100", "011101"};
+                              "010111", "011100", "011101"};
 
 const char *functBins[] = { "000000", "000001", "000010", "000011", "000100", "000101", "000110", "000111", "001000", "001001", "001010" };
 
@@ -74,7 +75,7 @@ void assembly2binary(AssemblyCode codeLine){
             }
             break;
         case formatSYS:
-            if(inst.opcode == hlt || inst.opcode == sleep || inst.opcode == wake){
+            if(inst.opcode == hlt) {
                 fprintf(listing,"ram[%d] = {6'b%s, 26'd0};",codeLine->lineno,
                                                            opcodeBins[inst.opcode]);
                 fprintf(listing,"   // %s\n",Prefixos[inst.opcode]);
