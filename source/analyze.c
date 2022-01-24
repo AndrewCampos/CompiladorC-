@@ -58,23 +58,6 @@ static void nullProc(TreeNode *t) {
 }
 
 /**
- * Confere se o nó se trata de uma função reservada do sistema.
- * 
- * Parâmetros:
- * t: Nó atual da árvore sintática a ser analisado.
- * 
- * Retorna:
- * 1 caso seja uma função reservada, 0 caso contrário.
- */
-int isReservedFunction(TreeNode *t) {
-    return (strcmp(t->attr.name, "input") == 0)
-        || (strcmp(t->attr.name, "output") == 0)
-        || (strcmp(t->attr.name, "sysWake") == 0)
-        || (strcmp(t->attr.name, "sysSleep") == 0)
-        || (strcmp(t->attr.name, "loadStack") == 0)
-        || (strcmp(t->attr.name, "saveStack") == 0);
-}
-
  * @brief Insere identificadores armazenados no nó referenciado na tabela de símbolos.
  *
  * @param t: Nó atual da árvore sintática a ser analisado. 

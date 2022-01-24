@@ -337,3 +337,12 @@ void printSucess(char *message, PrintFlag flag) {
         break;
     }
 }
+
+int isReservedFunction(TreeNode *t) {
+    return (strcmp(t->attr.name, "input") == 0)
+        || (strcmp(t->attr.name, "output") == 0)
+        || (strcmp(t->attr.name, "load") == 0)
+        || (strcmp(t->attr.name, "store") == 0)
+        || (strcmp(t->attr.name, "loadStack") == 0)
+        || (strcmp(t->attr.name, "saveStack") == 0);
+}
