@@ -1,4 +1,4 @@
-`v1.1.14`
+`v1.1.14-SNAPSHOT`
 # Compilador para a Linguagem C-
 
 Este repositório se trata de um projeto da disciplina Laboratório de Compiladores da UNIFESP SJC no ano de 2020, onde a proposta foi desenvolver a um compilador para a linguagem C- proposta no livro Compiladores: Princípios e Práticas de Kenneth Louden. O compilador, além de fazer toda análise do código C-, gera um código binário baseado em um [processador de 32 bits](https://github.com/AndrewCampos/Processador-AOC), feito anteriormente durante o curso, e arquivos de texto com todos os processos de compilação sendo eles a **árvore sintática**, a **tabela de símbolos**, o **código intermediário** e o **código assembly**.
