@@ -9,7 +9,7 @@
 const char *Prefixos[] = { "add" , "sub" , "mult", "div"  , "and" , "or" , "nand", "nor" , "sle" , "slt", "sge",
                            "addi", "subi", "divi", "multi", "andi", "ori", "nori", "slei", "slti", "beq", "bne",
                            "blt" , "bgt" , "sti" , "ldi"  , "str" , "ldr", "hlt" , "in"  , "out" , "jmp", "jal",
-                           "jst" , "lstk", "sstk", "mov"  , "put" , "ctso" };
+                           "jst" , "lstk", "sstk", "mov"  , "put" , "ctso", "nop" };
 
 const char *opcodeBins[] =   {"000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", "000000", 
                               "000001", "000010", "000011", "000100", "000101", "000110", "000111", "001000", "001001", "001010", "001011",
@@ -24,6 +24,12 @@ void assembly2binary(AssemblyCode codeLine){
         inst = codeLine->line.instruction;
         switch(inst.format){
         case formatR:
+            if (inst.opcode == nop) {
+                fprintf(listing,"ram[%d] = {32'd0};", codeLine->lineno);
+                fprintf(listing,"   // %s\n",Prefixos[inst.opcode]);
+                break;
+            }
+
             fprintf(listing,"ram[%d] = {6'b%s, 5'd%d, 5'd%d, 5'd%d, 5'd0, 6'b%s};",codeLine->lineno,
                                                              opcodeBins[inst.opcode],
                                                              inst.reg2,
