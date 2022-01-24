@@ -2,10 +2,7 @@ void savePC(void) {
     int a;
     int b;
     input();
-    a = saveStack();
-    store(300, a);
-    b = load(300);
-    output(b);
+    b = load(100);
     loadStack(b);
 }
 
@@ -17,7 +14,6 @@ void printPC(void) {
     saveStack(a);
     b = load(a);
     output(b);
-    loadStack(b);
     savePC();
 }
 
