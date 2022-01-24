@@ -22,7 +22,7 @@ typedef enum { $zero, $r1, $r2, $r3, $r4, $r5, $r6, $r7, $r8, $r9, $r10, $r11, $
 
 typedef enum {
     add, sub, mult, divi, and, or , nand, nor, sle, slt, sge, addi, subi, divim, multi, andi, ori, nori, slei, slti, beq,
-    bne, blt, bgt, sti, ldi, str, ldr, hlt, in, out, jmp, jal, jst, lstk, sstk, mov, put, ctso
+    bne, blt, bgt, sti, ldi, str, ldr, hlt, in, out, jmp, jal, jst, lstk, sstk, mov, put, ctso, nop
 } InstrKind;
 
 typedef struct {
