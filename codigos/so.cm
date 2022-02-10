@@ -1,0 +1,78 @@
+int current;
+int processA;
+int processB;
+int dataA;
+int dataB;
+int stackA;
+int stackB;
+int modo;
+int finish;
+
+int endProcess(void) {
+    int stack;
+
+    if (finish == 1) {
+        halt();
+    }
+
+    finish = 1;
+
+    if (current == 0) {
+        saveStack(processA);
+    } else {
+        saveStack(processA);
+    }
+
+    updateLP(200);
+    stack = 1;
+    while(stack < 10) {
+        if (current == 0) {
+            saveStack(stackA + stack);
+        } else {
+            saveStack(stackB + stack);
+        }
+        stack = stack + 1;
+    }
+
+    if (current == 0) {
+        current = 1;
+    } else {
+        current = 0;
+    }
+
+    while(stack != 0) {
+        if (current == 0) {
+            loadStack(load(stackA + stack));
+        } else {
+            loadStack(load(stackB + stack));
+        }
+        stack = stack - 1;
+    }
+
+    if (current == 0) {
+        loadStack(processA);
+        updateLP(dataA);
+    } else {
+        loadStack(processB);
+        updateLP(dataB);
+    }
+
+    return 0;
+}
+
+int switch(void) {
+    return 0;
+}
+
+int main(void) {
+    processA = 260;
+    processB = 380;
+    dataA = 330;
+    dataB = 450;
+    current = 1;
+    finish = 0;
+    updateLP(dataA);
+    loadStack(processA);
+    modo = input();
+    return 0;
+}
