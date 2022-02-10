@@ -345,5 +345,5 @@ int isReservedFunction(TreeNode *t) {
         || (strcmp(t->attr.name, "store") == 0)
         || (strcmp(t->attr.name, "loadStack") == 0)
         || (strcmp(t->attr.name, "saveStack") == 0)
-        || (strcmp(t->attr.name, "nop") == 0);
+        || (strcmp(t->attr.name, "updateLP") == 0);
 }

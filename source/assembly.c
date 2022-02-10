@@ -7,7 +7,7 @@
 
 const char *InstrNames[] = {"add", "sub", "mult", "div", "and", "or", "nand", "nor", "sle", "slt", "sge", "addi", "subi", "divi", "multi", "andi", "ori",
                             "nori", "slei", "slti", "beq", "bne", "blt", "bgt", "sti", "ldi", "str", "ldr", "hlt", "in", "out", "jmp", "jal", "jst",
-                            "lstk", "sstk", "mov", "put", "ctso", "nop"};
+                            "lstk", "sstk", "mov", "put", "ctso"};
 
 const char *regNames[] = {"$zero", "$r1", "$r2", "$r3", "$r4", "$r5", "$r6", "$r7", "$r8", "$r9", "$r10", "$r11", "$r12", "$r13", "$r14", "$r15",
                           "$r16", "$r17", "$r18", "$r19", "$p1", "$p2", "$p3", "$p4", "$p5", "$p6", "$p7", "$p8", "$p9", "$p10", "$ret", "$lp", ""};
@@ -455,10 +455,10 @@ void generateInstruction(QuadList l) {
             } else if (strcmp(a2.contents.var.name, "store") == 0) {
                 instructionI(str, $p2, $p1, 0, NULL);
 
-            } else if (strcmp(a2.contents.var.name, "nop") == 0) {
-                instructionR(nop, $zero, $zero, $zero);
-            
-            } else {
+            } else if (strcmp(a2.contents.var.name, "updateLP") == 0) {
+                instructionI(mov, $lp, $p1, 0, NULL);
+
+            } else{
                 aux = getFunSize(a2.contents.var.scope);
                 instructionI(addi, $lp, $lp, aux, NULL);
                 instructionJ(jal, -1, a2.contents.var.name);
