@@ -458,7 +458,10 @@ void generateInstruction(QuadList l) {
             } else if (strcmp(a2.contents.var.name, "updateLP") == 0) {
                 instructionI(mov, $lp, $p1, 0, NULL);
 
-            } else{
+            } else if (strcmp(a2.contents.var.name, "halt") == 0) {
+                instructionSYS(hlt, none);
+                
+            } else {
                 aux = getFunSize(a2.contents.var.scope);
                 instructionI(addi, $lp, $lp, aux, NULL);
                 instructionJ(jal, -1, a2.contents.var.name);
