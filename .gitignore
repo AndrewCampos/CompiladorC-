@@ -6,3 +6,4 @@
 lex.yy.c
 Parser.tab*
 compilador
+teste*
