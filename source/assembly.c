@@ -335,7 +335,7 @@ void generateInstruction(QuadList l) {
             aux = getMemLoc(a2.contents.var.name, a2.contents.var.scope);
             if (aux == -1) { // caso a variável for global
                 aux = getMemLoc(a2.contents.var.name, "global");
-                instructionI(ldi, getReg(a1.contents.var.name), none, aux, NULL);
+                instructionI(ldr, getReg(a1.contents.var.name), $zero, aux, NULL);
             
             } else{
                 instructionI(ldr, getReg(a1.contents.var.name), $lp, aux, NULL);
@@ -366,11 +366,11 @@ void generateInstruction(QuadList l) {
                 aux = getMemLoc(a2.contents.var.name, "global");
 
                 if (a3.kind == Empty) { // caso não seja um vetor global
-                    instructionI(sti, getReg(a1.contents.var.name), none, aux, NULL);
+                    instructionI(str, getReg(a1.contents.var.name), $zero, aux, NULL);
                 
                 } else if (a3.kind == IntConst) {
                     aux += a3.contents.val - 1;
-                    instructionI(sti, getReg(a1.contents.var.name), none, aux, NULL);
+                    instructionI(str, getReg(a1.contents.var.name), $zero, aux, NULL);
                 
                 } else {
                     instructionI(str, getReg(a1.contents.var.name), getReg(a3.contents.var.name), aux, NULL);
