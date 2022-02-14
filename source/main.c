@@ -148,8 +148,11 @@ void doCodeGen() {
     if (CreateFiles) {
         makeFiles();
     } else {
-        FILE *binary, *temp;
+        FILE *binary, *assembly, *temp;
         temp = listing;
+        assembly = fopen(assCode, "w");
+        listing = assembly;
+        printAssembly();
         binary = fopen(binCode, "w");
         listing = binary;
         generateBinary();
