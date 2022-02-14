@@ -1,5 +1,3 @@
-int in;
-
 int fibonacci(int num) {
     int prim;
     int sec;
@@ -11,7 +9,7 @@ int fibonacci(int num) {
 }
 
 int main(void) {
-
+    int in;
     in = input();
     if(in == 0) {
         output(100000);

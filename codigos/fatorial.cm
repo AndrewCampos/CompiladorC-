@@ -1,0 +1,17 @@
+int fatorial(int n) {
+    if (n == 0) {
+        return 1;
+    }
+
+    if (n == 1) {
+        return 1;
+    }
+
+    return fatorial(n-1)*n;
+}
+
+void main(void) {
+    int n;
+    n = input();
+    output(fatorial(n));
+}
