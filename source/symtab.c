@@ -347,9 +347,9 @@ void insereParam(char *nome) {
 
 void printSymTab(FILE *listing) {
     int i;
-    fprintf(listing, "---------------------------------------------------------------------------------\n");
-    fprintf(listing, "Nome           Escopo  Tipo ID  Tipo Retorno  Tipo Param  Mem. Loc.  Num da linha\n");
-    fprintf(listing, "-------------  ------  -------  ------------  ----------  ---------  ------------\n");
+    fprintf(listing, "-------------------------------------------------------------------------------------\n");
+    fprintf(listing, "Nome             Escopo    Tipo ID  Tipo Retorno  Tipo Param  Mem. Loc.  Num da linha\n");
+    fprintf(listing, "-------------  ----------  -------  ------------  ----------  ---------  ------------\n");
 
     for (i = 0; i < SIZE; ++i) {
         if (hashTable[i] != NULL) {
@@ -358,7 +358,7 @@ void printSymTab(FILE *listing) {
             while (l != NULL) {
                 LineList t = l->lines;
                 fprintf(listing, "%-14s ", l->name);
-                fprintf(listing, "%-6s  ", l->escopo);
+                fprintf(listing, "%-10s  ", l->escopo);
                 char *id, *data;
                 switch (l->IType) {
                 case RETT:
@@ -397,6 +397,7 @@ void printSymTab(FILE *listing) {
                     data = "null";
                     break;
                 default:
+                    data = "undefined";
                     break;
                 }
                 fprintf(listing, "%-7s  ", id);
