@@ -54,8 +54,8 @@
 #define nregisters 32  // Número de registradores
 #define nregtemp 20    // Número de registradores temporários
 #define nregparam 10   // Número de registradores de parametros
-#define iniDataMem 250 // Endereço da primeira posição da memória de dados
-#define lploc 300      // Endereço do inicio das variaveis locais
+#define iniDataMem 331 // Endereço da primeira posição da memória de dados
+#define lploc 340      // Endereço do inicio das variaveis locais
 #define MAXRESERVED 8  // Número máximo de palavras reservadas
 #define MAXCHILDREN 3  // Número máximo de filhos de um nó da árvore sintática
 

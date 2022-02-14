@@ -4,7 +4,7 @@
 #include "assembly.h"
 #include <string.h>
 
-#define END_SWITCH 111
+#define END_SWITCH 104
 
 const char *Prefixos[] = { "add" , "sub" , "mult", "div"  , "and" , "or" , "nand", "nor" , "sle" , "slt", "sge",
                            "addi", "subi", "divi", "multi", "andi", "ori", "nori", "slei", "slti", "beq", "bne",
