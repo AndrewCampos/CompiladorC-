@@ -423,11 +423,14 @@ void generateInstruction(QuadList l) {
             break;
 
         case opEND:
-            if (strcmp(a1.contents.var.name, "main") == 0) {
-                instructionJ(jmp, -1, "end");
+            if (strcmp(a1.contents.var.name, "main") != 0) {
+                instructionJ(jst, 0, NULL);
+            
+            } else if (SO == TRUE) {
+                instructionJ(jst, 0, NULL);
             
             } else {
-                instructionJ(jst, 0, NULL);
+                instructionJ(jmp, -1, "end");
             }
             break;
 
