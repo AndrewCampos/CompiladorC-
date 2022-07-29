@@ -6,7 +6,7 @@
 #define QUANTUM 20
 
 const char *InstrNames[] = {"add", "sub", "mult", "div", "and", "or", "nand", "nor", "sle", "slt", "sge", "addi", "subi", "divi", "multi", "andi", "ori",
-                            "nori", "slei", "slti", "beq", "bne", "blt", "bgt", "sti", "ldi", "str", "ldr", "hlt", "in", "out", "jmp", "jal", "jst",
+                            "nori", "slei", "slti", "beq", "bne", "blt", "bgt", "sti", "ldi", "str", "ldr", "hlt", "in", "out", "pwm", "jmp", "jal", "jst",
                             "lstk", "sstk", "mov", "put", "ctso"};
 
 const char *regNames[] = {"$zero", "$r1", "$r2", "$r3", "$r4", "$r5", "$r6", "$r7", "$r8", "$r9", "$r10", "$r11", "$r12", "$r13", "$r14", "$r15",
@@ -446,6 +446,9 @@ void generateInstruction(QuadList l) {
             } else if (strcmp(a2.contents.var.name, "output") == 0) {
                 instructionSYS(out, $p1);
             
+            } else if (strcmp(a2.contents.var.name, "writePWM") == 0) {
+                instructionSYS(pwm, $p1);
+
             } else if (strcmp(a2.contents.var.name, "loadStack") == 0) {
                 instructionSYS(lstk, $p1);
             
